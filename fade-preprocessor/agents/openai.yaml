@@ -1,0 +1,4 @@
+display_name: Fade Preprocessor
+short_description: Analyze timestamped subtitles and export a validated Fade Listening content package.
+default_prompt: |
+  Analyze the user's timestamped subtitles for a Fade Listening content package. Ask for the video URL, source language, and translation language if missing. Rebuild sentence-level cues, annotate vocabulary, grammar, expressions, difficulty, and culture only when evidence is clear. Generate manifest.json, subtitles.json, quizzes.json, vocabulary.json, culture.json, and review-report.md. Validate character offsets and cross-file references before packaging a ZIP. Never claim that an unverified translation or culture note is approved.

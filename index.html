@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fade Listening · 自适应字幕听力</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="overrides.css" />
+  <link rel="stylesheet" href="generic.css" />
+  <link rel="stylesheet" href="product.css" />
+</head>
+<body>
+  <div class="fade-shell landing-mode" id="appShell">
+    <aside class="fade-sidebar">
+      <div class="fade-brand"><span>↗</span> Fade Listening</div>
+      <div class="fade-label">CONTENT LAB</div>
+      <nav>
+        <button class="fade-nav active" data-view="import"><span>＋</span>导入内容</button>
+        <button class="fade-nav" data-view="learn"><span>◉</span>学习播放器</button>
+        <button class="fade-nav" data-view="report"><span>▧</span>学习报告</button>
+      </nav>
+      <div class="fade-sidebar-note"><strong>本地优先</strong><span>Skill 在外部分析<br>Web app 只运行规则</span></div>
+    </aside>
+    <main class="fade-main">
+      <header class="fade-topbar"><div><span class="crumb">FADE LISTENING /</span><strong id="topTitle">导入内容包</strong></div><span class="schema-chip">schema v1.0</span></header>
+
+      <section id="importView" class="fade-view active landing-page">
+        <nav class="landing-nav"><a class="landing-logo" href="#"><span>↗</span> Fade</a><div class="landing-links"><a href="#why-fade">Why Fade</a><a href="#how-it-works">How it works</a><a href="#demo">Demo</a></div><button class="nav-cta" id="navTry">Try the demo <b>↗</b></button></nav>
+        <div class="landing-hero" id="why-fade"><div class="hero-copy"><span class="landing-kicker">LISTENING PRACTICE, WITHOUT THE PRESSURE</span><h1>Let subtitles<br><em>fade gently.</em></h1><p>Watch the stories you love. Hear a little more each time. Fade turns real videos into calm, adaptive listening practice.</p><div class="hero-actions"><button class="landing-primary" id="loadDemo">Explore a lesson <b>↗</b></button><button class="landing-text-btn" data-scroll="how-it-works">See how it works <span>↓</span></button></div><div class="hero-proof"><span class="proof-avatars"><i>es</i><i>th</i><i>fr</i></span><span>Made for curious language learners<br><b>one story at a time</b></span></div></div><div class="hero-visual"><div class="sun-glow"></div><div class="cloud cloud-one"></div><div class="cloud cloud-two"></div><div class="phone-mockup"><div class="phone-top"><span>9:41</span><i></i><span>•••</span></div><div class="phone-scene"><span class="scene-label">EPISODE 02</span><strong>Lola<br>&amp; Ana</strong><small>A short story in Spanish</small><div class="scene-play">▶</div></div><div class="phone-caption"><span>Esta es la historia de Lola y Ana, que</span><b>comparten un piso</b><small>Tap a phrase when you need a little help</small></div><div class="phone-progress"><i></i></div></div><div class="float-note note-one"><b>01</b><span>Listen first<br><small>字幕会慢慢淡出</small></span></div><div class="float-note note-two"><span>✦</span><b>Made for real stories</b></div></div></div>
+        <div class="landing-trust"><span>LEARN THROUGH</span><b>short stories</b><i></i><span>SUPPORTED BY</span><b>gentle prompts</b><i></i><span>BUILT FOR</span><b>any language</b></div>
+        <div class="landing-section" id="how-it-works"><div class="section-intro"><span class="landing-kicker">A QUIETER WAY TO PRACTICE</span><h2>Less testing.<br><em>More understanding.</em></h2><p>Fade keeps the useful parts of a lesson and removes the pressure to understand everything at once.</p></div><div class="feature-cards"><article><span class="feature-icon blue">◌</span><b>Start with a story</b><p>Bring your own video and an approved subtitle package.</p></article><article><span class="feature-icon yellow">✦</span><b>Let support follow you</b><p>Reveal a phrase, take a quick check, and keep moving.</p></article><article><span class="feature-icon green">⌁</span><b>Come back with confidence</b><p>Your review queue remembers what deserves another listen.</p></article></div></div>
+        <div class="landing-demo" id="demo"><div class="demo-copy"><span class="landing-kicker">READY WHEN YOU ARE</span><h2>Try Lola &amp; Ana</h2><p>A tiny Spanish episode to show the full Fade loop: listen, reveal, reflect, continue.</p><div class="demo-meta"><span>Spanish</span><span>3 cues</span><span>3 questions</span></div><button class="landing-primary" id="choosePackage">Upload your own package <b>↗</b></button><input id="packageInput" type="file" accept=".zip,application/zip" hidden><div class="drop-zone-mini" id="dropZone">or drop a <b>.zip</b> content package here</div></div><div class="demo-card"><div class="demo-card-top"><span>FADE LISTENING</span><span>02:18</span></div><div class="demo-card-scene"><span>“I think Pablo likes Lola.”</span><b>Press play to begin</b><i>▶</i></div><div class="demo-card-bottom"><span>Balanced support</span><span>● ready</span></div></div></div>
+        <footer class="landing-footer"><span>Fade Listening</span><span>Local-first language practice · No account required</span><span>Built for thoughtful learners ↗</span></footer>
+      </section>
+
+      <section id="learnView" class="fade-view">
+        <div class="learn-heading"><div><span class="fade-eyebrow">SPANISH · EPISODE 02</span><h1>Lola y Ana</h1><p id="learnMeta">Balanced support · 内容包已验证</p></div><button class="fade-outline" id="backImport">更换内容包</button></div>
+        <div class="player-layout"><div class="fade-panel player-panel"><div class="video-shell"><div id="ytFrame" class="yt-frame" title="Lola y Ana episode"></div><div class="video-fallback"><span>YOUTUBE PLAYER</span><strong>视频可嵌入时会在这里播放</strong><small>字幕始终显示在播放器下方</small></div></div><div class="player-controls"><button id="playDemo" class="play-button">▶ 播放</button><div class="time-track"><span id="currentTime">00:00</span><i><b id="timeBar"></b></i><span id="durationTime">20:00</span></div><button id="toggleTranslation" class="control-chip">EN 翻译</button></div><div class="subtitle-card"><div class="subtitle-toolbar"><span>自适应字幕</span><div><button class="support active" data-mode="balanced">Balanced</button><button class="support" data-mode="support">More support</button><button class="support" data-mode="challenge">Challenge</button></div></div><div id="subtitleText" class="subtitle-text"></div><div class="subtitle-actions"><button id="revealBtn">Reveal 当前句</button><button id="lessBtn">More support</button><button id="cultureBtn">⌁ 文化注释</button></div></div></div><aside class="fade-panel lesson-side"><div class="side-head"><div><span class="fade-eyebrow">SESSION</span><h2>本次练习</h2></div><span class="status-dot">●</span></div><div class="session-stat"><strong id="progressStat">0%</strong><span>episode progress</span></div><div class="goal-row"><span>目标</span><strong>先听，再确认</strong></div><div class="goal-row"><span>当前策略</span><strong id="modeLabel">Balanced</strong></div><div class="checkpoint"><span class="checkpoint-tag">NEXT CHECKPOINT</span><strong id="checkpointTime">—</strong><p id="checkpointCopy">到检查点时会暂停视频，你可以答题或跳过。</p><button id="startQuiz" class="fade-primary full">开始小测</button></div><div class="signal-list"><div><span>Reveal</span><strong id="revealCount">0</strong></div><div><span>已完成测验</span><strong id="quizCount">0 / 0</strong></div></div></aside></div>
+      </section>
+
+      <section id="reportView" class="fade-view"><div class="learn-heading"><div><span class="fade-eyebrow">SESSION REPORT</span><h1>你的学习记录</h1><p>这些数据只保存在当前浏览器，用来决定下一段字幕的支持程度。</p></div><button class="fade-outline" data-view-target="learn">继续学习 →</button></div><div class="report-grid"><div class="fade-panel report-score"><span class="fade-eyebrow">COMPREHENSION CHECK</span><strong id="reportScore">—</strong><span>本次 checkpoint 正确率</span></div><div class="fade-panel"><span class="fade-eyebrow">LEARNING SIGNALS</span><div class="report-row"><span>Reveal 当前句</span><strong id="reportReveal">0</strong></div><div class="report-row"><span>优先保留</span><strong id="reportKeep">表达 · 2</strong></div><div class="report-row"><span>下一段策略</span><strong id="reportMode">Balanced</strong></div></div></div><div class="fade-panel review-list"><div class="review-head"><div><span class="fade-eyebrow">REVIEW QUEUE</span><h2>下一次遇到时会保留提示</h2></div></div><div class="review-item"><span>表达</span><strong>compartir un piso</strong><small>to share an apartment · related to s001</small></div><div class="review-item"><span>语法</span><strong>que + verb</strong><small>relative clause · source cue s001</small></div></div></section>
+    </main>
+  </div>
+  <div id="quizModal" class="modal-backdrop"><div class="quiz-modal"><button class="modal-close" id="closeQuiz">×</button><span id="quizEyebrow" class="fade-eyebrow">CHECKPOINT</span><h2 id="quizTitle">你听懂了吗？</h2><p id="quizIntro">根据刚才的字幕内容选择最合适的意思。</p><div id="quizContent" class="quiz-content"></div><div class="quiz-modal-actions"><button id="skipQuiz" class="fade-outline">跳过本次</button><button id="submitQuiz" class="fade-primary">提交答案</button><button id="continueQuiz" class="fade-primary" hidden>继续播放</button></div><div id="quizResult" class="quiz-result"></div></div></div>
+  <div id="toast" class="toast"></div>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="engine.js"></script>
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "content_id": "spanish-lola-demo-001",
+  "title": "Lola y Ana — Demo",
+  "video": {
+    "provider": "youtube",
+    "video_id": "cICqwDkewYo",
+    "duration_seconds": 1200,
+    "caption_policy": "original_cc_off_recommended"
+  },
+  "languages": {
+    "source": "es",
+    "translation": "en"
+  },
+  "assessment_interval_seconds": 900,
+  "files": {
+    "subtitles": "subtitles.json",
+    "quizzes": "quizzes.json",
+    "vocabulary": "vocabulary.json",
+    "culture": "culture.json"
+  },
+  "content_version": "1.0.0",
+  "review_status": "approved"
+}

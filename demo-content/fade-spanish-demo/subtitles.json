@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0",
+  "content_id": "spanish-lola-demo-001",
+  "cues": [
+    {
+      "id": "s001",
+      "start": 8,
+      "end": 15,
+      "source_cue_ids": [
+        "raw001",
+        "raw002",
+        "raw003"
+      ],
+      "source_text": "Esta es la historia de Lola y Ana, que comparten un piso en España.",
+      "translation_text": "This is the story of Lola and Ana, who share an apartment in Spain.",
+      "annotations": [
+        {
+          "id": "a001",
+          "text": "comparten un piso",
+          "start_char": 39,
+          "end_char": 56,
+          "category": "expression",
+          "difficulty": 2,
+          "hide_eligible": true,
+          "story_importance": "medium",
+          "concept_id": "share_apartment",
+          "review_status": "approved"
+        }
+      ],
+      "culture_note_ids": []
+    },
+    {
+      "id": "s002",
+      "start": 15,
+      "end": 22,
+      "source_cue_ids": [
+        "raw003"
+      ],
+      "source_text": "Tienen un vecino, Pablo. A Pablo le gusta Lola.",
+      "translation_text": "They have a neighbour, Pablo. Pablo likes Lola.",
+      "annotations": [
+        {
+          "id": "a002",
+          "text": "vecino",
+          "start_char": 10,
+          "end_char": 16,
+          "category": "vocabulary",
+          "difficulty": 1,
+          "hide_eligible": true,
+          "story_importance": "low",
+          "concept_id": "neighbour",
+          "review_status": "approved"
+        },
+        {
+          "id": "a003",
+          "text": "le gusta",
+          "start_char": 33,
+          "end_char": 41,
+          "category": "grammar",
+          "difficulty": 2,
+          "hide_eligible": true,
+          "story_importance": "medium",
+          "concept_id": "gustar",
+          "review_status": "approved"
+        }
+      ],
+      "culture_note_ids": []
+    },
+    {
+      "id": "s003",
+      "start": 22,
+      "end": 30,
+      "source_cue_ids": [
+        "raw004"
+      ],
+      "source_text": "Pero Lola no sabe que Pablo la mira todos los días.",
+      "translation_text": "But Lola does not know that Pablo watches her every day.",
+      "annotations": [
+        {
+          "id": "a004",
+          "text": "todos los días",
+          "start_char": 36,
+          "end_char": 50,
+          "category": "expression",
+          "difficulty": 1,
+          "hide_eligible": true,
+          "story_importance": "low",
+          "concept_id": "every_day",
+          "review_status": "approved"
+        }
+      ],
+      "culture_note_ids": []
+    }
+  ]
+}

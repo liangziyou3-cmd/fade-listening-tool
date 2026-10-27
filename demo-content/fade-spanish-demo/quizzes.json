@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0",
+  "content_id": "spanish-lola-demo-001",
+  "checkpoints": [
+    {
+      "id": "cp001",
+      "target_time": 15,
+      "trigger_time": 15,
+      "covered_start": 0,
+      "covered_end": 15,
+      "question_ids": [
+        "q001",
+        "q002",
+        "q003"
+      ],
+      "skippable": true
+    }
+  ],
+  "questions": [
+    {
+      "id": "q001",
+      "checkpoint_id": "cp001",
+      "type": "expression_meaning",
+      "category": "expression",
+      "prompt": "What does 'comparten un piso' mean?",
+      "options": [
+        "They share an apartment",
+        "They buy a house",
+        "They leave Spain"
+      ],
+      "correct_option_index": 0,
+      "explanation": "Compartir un piso means to share an apartment.",
+      "related_subtitle_ids": [
+        "s001"
+      ],
+      "related_annotation_ids": [
+        "a001"
+      ],
+      "evidence": "s001"
+    },
+    {
+      "id": "q002",
+      "checkpoint_id": "cp001",
+      "type": "detail",
+      "category": "comprehension",
+      "prompt": "Who likes Lola?",
+      "options": [
+        "Ana",
+        "Pablo",
+        "A neighbour's friend"
+      ],
+      "correct_option_index": 1,
+      "explanation": "The line says A Pablo le gusta Lola.",
+      "related_subtitle_ids": [
+        "s002"
+      ],
+      "related_annotation_ids": [
+        "a003"
+      ],
+      "evidence": "s002"
+    },
+    {
+      "id": "q003",
+      "checkpoint_id": "cp001",
+      "type": "vocabulary",
+      "category": "vocabulary",
+      "prompt": "What does vecino mean?",
+      "options": [
+        "Neighbour",
+        "Roommate",
+        "Teacher"
+      ],
+      "correct_option_index": 0,
+      "explanation": "Vecino means neighbour.",
+      "related_subtitle_ids": [
+        "s002"
+      ],
+      "related_annotation_ids": [
+        "a002"
+      ],
+      "evidence": "s002"
+    }
+  ]
+}
