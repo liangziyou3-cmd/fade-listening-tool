@@ -29,7 +29,77 @@ function showImportErrors(errors){toast(`Import failed: ${errors[0]}`);console.e
 async function importZip(file){try{if(!window.JSZip)throw new Error('ZIP support failed to load');if(file.size>20*1024*1024)throw new Error('ZIP file exceeds the 20 MB limit');const zip=await JSZip.loadAsync(file,{checkCRC32:true});const files=Object.values(zip.files).filter(f=>!f.dir);if(files.length>32)throw new Error('ZIP contains too many files');const total=files.reduce((n,f)=>n+(f._data?.uncompressedSize||0),0);if(total>50*1024*1024)throw new Error('Unzipped content exceeds 50 MB');for(const f of files)if(f.name.startsWith('/')||f.name.split('/').includes('..'))throw new Error('ZIP contains an unsafe path');const read=async name=>{if(!name||name.startsWith('/')||name.split('/').includes('..'))throw new Error(`Unsafe file path: ${name}`);const item=zip.file(name);if(!item)throw new Error(`Missing ${name}`);return JSON.parse(await item.async('string'))};const manifest=await read('manifest.json');const filesMap=manifest.files||{};const pkg={manifest,subtitles:await read(filesMap.subtitles||'subtitles.json'),quizzes:await read(filesMap.quizzes||'quizzes.json'),vocabulary:await read(filesMap.vocabulary||'vocabulary.json'),culture:await read(filesMap.culture||'culture.json')};const errors=validatePackage(pkg);if(errors.length){showImportErrors(errors);return}startContent(mapPackage(pkg));}catch(e){toast(`Import failed: ${e.message}`)}}
 async function loadDemo(){try{const base='demo-content/fade-spanish-demo/';const names=['manifest','subtitles','quizzes','vocabulary','culture'];const entries=await Promise.all(names.map(async n=>[n,await (await fetch(`${base}${n}.json`)).json()]));const pkg=Object.fromEntries(entries);const errors=validatePackage(pkg);if(errors.length){showImportErrors(errors);return}startContent(mapPackage(pkg));}catch(e){toast(`Could not load the demo: ${e.message}`)}}
 $('#loadDemo').addEventListener('click',loadDemo);$('#navTry')?.addEventListener('click',loadDemo);$('#choosePackage').addEventListener('click',()=>$('#packageInput').click());$('#packageInput').addEventListener('change',e=>{if(e.target.files[0])importZip(e.target.files[0]);e.target.value=''});$$('[data-scroll]').forEach(button=>button.addEventListener('click',()=>document.getElementById(button.dataset.scroll)?.scrollIntoView({behavior:'smooth'})));
-if('IntersectionObserver' in window){const landingObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting)entry.target.classList.add('is-visible')}),{threshold:.12});$$('.landing-section,.landing-demo,.landing-footer').forEach(section=>landingObserver.observe(section))}else{$$('.landing-section,.landing-demo,.landing-footer').forEach(section=>section.classList.add('is-visible'))}
+const revealWords=$$('.tagline-reveal [data-reveal-word]');
+if(revealWords.length&&'IntersectionObserver' in window){
+ const wordObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-revealed');wordObserver.unobserve(entry.target)}}),{threshold:.6,rootMargin:'0px 0px -12%'});
+ revealWords.forEach((word,index)=>{word.style.transitionDelay=`${index*140}ms`;wordObserver.observe(word)});
+}else{revealWords.forEach(word=>word.classList.add('is-revealed'))}
+const themeButtons=$$('[data-theme-toggle]');
+function setTheme(theme){
+ const dark=theme==='dark';
+ document.documentElement.dataset.theme=dark?'dark':'light';
+ document.querySelector('meta[name="theme-color"]')?.setAttribute('content',dark?'#111d2a':'#eef8ff');
+ themeButtons.forEach(button=>{
+  button.setAttribute('aria-pressed',String(dark));
+  button.querySelector('.theme-icon').textContent=dark?'☀':'☾';
+  button.querySelector('.theme-label').textContent=dark?'Day mode':'Night mode';
+ });
+ try{localStorage.setItem('fade-theme',dark?'dark':'light')}catch{}
+}
+let savedTheme='light';
+try{savedTheme=localStorage.getItem('fade-theme')||'light'}catch{}
+setTheme(savedTheme);
+themeButtons.forEach(button=>button.addEventListener('click',()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark')));
+if('IntersectionObserver' in window){
+ const landingObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting)entry.target.classList.add('is-visible')}),{threshold:.12});
+ $$('.landing-section,.landing-demo,.landing-footer,.landing-faq').forEach(section=>landingObserver.observe(section));
+ const journeySteps=$$('.journey-story-step');
+ const journeyCharacter=$('.journey-character-wrap');
+ const journeyObserver=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+   if(entry.isIntersecting){
+    entry.target.classList.add('is-visible');
+    journeySteps.forEach(step=>step.classList.toggle('is-current',step===entry.target));
+    const index=journeySteps.indexOf(entry.target);
+    if(journeyCharacter){journeyCharacter.style.setProperty('--journey-step',index);journeyCharacter.classList.remove('is-walking');void journeyCharacter.offsetWidth;journeyCharacter.classList.add('is-walking');}
+   }
+  });
+ },{threshold:.28,rootMargin:'-8% 0px -28%'});
+ journeySteps.forEach((step,index)=>{step.style.setProperty('--journey-delay',`${index*90}ms`);journeyObserver.observe(step)});
+}else{
+ $$('.landing-section,.landing-demo,.landing-footer,.landing-faq,.journey-story-step').forEach(section=>section.classList.add('is-visible'));
+}
+const storyBoard=$('#journeyBoard');
+if(storyBoard){
+ const storySlides=$$('.journey-story-slide');
+ const storyDots=$$('.storyboard-dots button');
+ let activeStory=0;
+ let settleTimer=null;
+ const paintStoryState=()=>{
+  storySlides.forEach((slide,i)=>slide.classList.toggle('is-active',i===activeStory));
+  storyDots.forEach((dot,i)=>{const on=i===activeStory;dot.classList.toggle('is-active',on);dot.setAttribute('aria-selected',String(on))});
+  const previous=$('.storyboard-prev'),next=$('.storyboard-next');
+  if(previous)previous.disabled=activeStory===0;
+  if(next)next.disabled=activeStory===storySlides.length-1;
+ };
+ const updateStory=(index,behavior='smooth')=>{
+  activeStory=Math.max(0,Math.min(storySlides.length-1,index));
+  paintStoryState();
+  storyBoard.scrollTo({left:activeStory*storyBoard.clientWidth,behavior});
+ };
+ const syncStory=()=>{clearTimeout(settleTimer);settleTimer=setTimeout(()=>{const index=Math.round(storyBoard.scrollLeft/storyBoard.clientWidth);if(index!==activeStory){activeStory=Math.max(0,Math.min(storySlides.length-1,index));paintStoryState()}},80)};
+ storyBoard.addEventListener('scroll',syncStory,{passive:true});
+ $('.storyboard-prev')?.addEventListener('click',()=>updateStory(activeStory-1));
+ $('.storyboard-next')?.addEventListener('click',()=>updateStory(activeStory+1));
+ storyDots.forEach((dot,i)=>dot.addEventListener('click',()=>updateStory(i)));
+ storyBoard.addEventListener('keydown',event=>{if(event.key==='ArrowRight'){event.preventDefault();updateStory(activeStory+1)}if(event.key==='ArrowLeft'){event.preventDefault();updateStory(activeStory-1)}});
+ let dragging=false,startX=0,startScroll=0;
+ storyBoard.addEventListener('pointerdown',event=>{if(event.pointerType==='mouse'&&event.button!==0)return;dragging=true;startX=event.clientX;startScroll=storyBoard.scrollLeft;storyBoard.classList.add('is-dragging');storyBoard.setPointerCapture?.(event.pointerId)});
+ storyBoard.addEventListener('pointermove',event=>{if(!dragging)return;storyBoard.scrollLeft=startScroll-(event.clientX-startX)});
+ const stopDragging=event=>{if(!dragging)return;dragging=false;storyBoard.classList.remove('is-dragging');storyBoard.releasePointerCapture?.(event.pointerId);syncStory()};
+ storyBoard.addEventListener('pointerup',stopDragging);storyBoard.addEventListener('pointercancel',stopDragging);storyBoard.addEventListener('pointerleave',event=>{if(event.pointerType==='mouse')stopDragging(event)});
+ updateStory(0,'auto');
+}
 ['dragenter','dragover'].forEach(type=>$('#dropZone').addEventListener(type,e=>{e.preventDefault();$('#dropZone').classList.add('dragging')}));['dragleave','drop'].forEach(type=>$('#dropZone').addEventListener(type,e=>{e.preventDefault();$('#dropZone').classList.remove('dragging')}));$('#dropZone').addEventListener('drop',e=>{const file=e.dataTransfer.files[0];if(file)importZip(file)});
 function startContent(content){state.content=content;state.session=FadeEngine.emptySession(content.manifest.content_id);state.session.mode=state.mode='balanced';state.translation=false;state.revealed.clear();state.checkpointTriggered.clear();state.sessionSeconds=0;state.activeCheckpoint=null;state.quizAnswers={};state.quizSubmitted=false;state.currentCueId=null;state.checkpointNotice=null;$('#toggleTranslation').textContent=`${content.translation.toUpperCase()||'EN'} translation`;$('#durationTime').textContent=formatTime(content.duration);$('#learnMeta').textContent=`${content.language.toUpperCase()} · Intermediate listening · Package verified`;$(`#learnView .learn-heading h1`).textContent=content.title;const eyebrow=$('#learnView .learn-heading .fade-eyebrow');if(eyebrow)eyebrow.textContent=`${content.language.toUpperCase()} · INTERMEDIATE · VIDEO LESSON`;$('#quizCount').textContent=`0 / ${content.quizzes.checkpoints.length}`;$('#revealCount').textContent='0';$('#progressStat').textContent='0%';$('#reportScore').textContent='—';$('#reportReveal').textContent='0';$('#reportMode').textContent='Balanced';$('#feedbackNote').textContent='Your answer helps us improve the learning flow.';$$('.feedback-option').forEach(button=>button.classList.remove('is-selected'));renderSessionReview();$('#subtitleText').textContent='Press Play to show subtitles in sync with the video.';setNextCheckpoint();initPlayer(content.videoId);switchView('learn');toast(`Package verified: ${content.language.toUpperCase()} · ${content.cues.length} cues`)}
 function initPlayer(videoId){clearInterval(state.poll);state.playerReady=false;if(state.player){try{state.player.destroy()}catch{}state.player=null}if(!window.YT||!YT.Player){$('#subtitleText').textContent='The YouTube player failed to load. Check your connection and try again.';return}state.player=new YT.Player('ytFrame',{videoId,playerVars:{playsinline:1,rel:0,modestbranding:1,cc_load_policy:0},events:{onReady:()=>{state.playerReady=true;const d=state.player.getDuration();if(d>0&&(!state.content.duration||Math.abs(d-state.content.duration)>60))toast('The package duration differs from the video. Check the subtitle timestamps.');state.poll=setInterval(syncPlayer,200)},onStateChange:onPlayerStateChange,onError:e=>{const messages={2:'Invalid video ID',5:'This video cannot be played in the HTML5 player',100:'This video is unavailable or private',101:'The video owner does not allow embedding',150:'The video owner does not allow embedding'};toast(`YouTube playback error: ${messages[e.data]||`Code ${e.data}`}`);$('#subtitleText').textContent='This video cannot be embedded. Try a public video that allows embedding.'}}})}
