@@ -1,10 +1,11 @@
 {
   "schema_version": "1.0",
   "content_id": "spanish-lola-demo-001",
-  "title": "Lola y Ana — Demo",
+  "title": "Lola y Ana",
   "video": {
     "provider": "youtube",
     "video_id": "cICqwDkewYo",
+    "title": "Lola y Ana",
     "duration_seconds": 1200,
     "caption_policy": "original_cc_off_recommended"
   },

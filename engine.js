@@ -76,7 +76,7 @@
     return candidates.slice(0, budget).map((item) => item.annotation);
   }
 
-  function renderSegments(cue, session, mode, revealedIds) {
+  function renderSegments(cue, session, mode, revealedIds, learningStyle = 'hide') {
     const source = chars(cue.source_text || '');
     const annotations = visibleAnnotations(cue, session, mode)
       .filter((annotation) => !revealedIds.has(annotation.id))
@@ -86,7 +86,11 @@
     annotations.forEach((annotation) => {
       if (annotation.start_char < cursor) return;
       parts.push({ type: 'text', value: source.slice(cursor, annotation.start_char).join('') });
-      parts.push({ type: 'hidden', value: source.slice(annotation.start_char, annotation.end_char).join(''), annotation });
+      parts.push({
+        type: learningStyle === 'highlight' ? 'highlighted' : 'hidden',
+        value: source.slice(annotation.start_char, annotation.end_char).join(''),
+        annotation
+      });
       cursor = annotation.end_char;
     });
     parts.push({ type: 'text', value: source.slice(cursor).join('') });

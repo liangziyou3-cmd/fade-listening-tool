@@ -33,3 +33,13 @@
 :root[data-theme="dark"] .landing-mode .language-option .language-copy strong,:root[data-theme="dark"] .landing-mode .faq-list summary{color:#f1f6fc}
 :root[data-theme="dark"] .footer-links a,:root[data-theme="dark"] .landing-mode .landing-text-btn{color:#bde1f4}
 :root[data-theme="dark"] #appShell:not(.landing-mode) .review-empty,:root[data-theme="dark"] #appShell:not(.landing-mode) .review-item small,:root[data-theme="dark"] #appShell:not(.landing-mode) .checkpoint p{color:#d3dfeb}
+:root[data-theme="dark"] .youtube-import-card{background:#1e3040;border-color:#355065;box-shadow:0 16px 30px rgba(0,0,0,.12)}
+:root[data-theme="dark"] .youtube-import-card label{color:#f1f6fc}
+:root[data-theme="dark"] .youtube-import-card p{color:#b0bfd0}
+:root[data-theme="dark"] .youtube-url-row input{background:#293f50;border-color:#486274;color:#edf4fb}
+:root[data-theme="dark"] .youtube-url-row input.has-error{border-color:#ef8d78;background:#4a3535}
+:root[data-theme="dark"] .learning-style-bar{background:#1e3040;border-color:#355065}
+:root[data-theme="dark"] .learning-style-bar>span{color:#b0bfd0}
+:root[data-theme="dark"] .learning-style-toggle button{background:#293f50;border-color:#486274;color:#ecf5fc}
+:root[data-theme="dark"] .learning-style-toggle button.active{background:#4d3d39;border-color:#8e665b;color:#ffc1a9}
+:root[data-theme="dark"] .subtitle-text .highlighted-word{background:#4d3d39;color:#ffc1a9;box-shadow:inset 0 -2px 0 #a87564}
