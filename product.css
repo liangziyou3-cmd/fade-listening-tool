@@ -368,27 +368,25 @@ body{font-family:'Manrope',sans-serif}
 @media(max-width:800px){#appShell[data-typeface="baloo"] .tagline-reveal{font-size:clamp(28px,4.4vw,40px)}#appShell[data-typeface="baloo"] .faq-intro h2{font-size:clamp(39px,6vw,54px)}#appShell[data-typeface="baloo"] .demo-copy h2{font-size:clamp(44px,6vw,54px)}}
 @media(max-width:620px){#appShell[data-typeface="baloo"] .tagline-reveal{font-size:28px;white-space:nowrap;overflow-x:auto}#appShell[data-typeface="baloo"] .faq-intro h2{font-size:42px}#appShell[data-typeface="baloo"] .demo-copy h2{font-size:46px}}
 
-/* Agent workflow preview: the player is revealed only after all eight preparation steps. */
-.agent-progress{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;justify-content:center;padding:26px 30px;background:linear-gradient(145deg,rgba(24,50,75,.96),rgba(49,88,112,.95));color:#fff}
+/* Compact Agent workflow preview: the player is revealed after all eight steps. */
+.agent-progress{position:absolute;inset:0;z-index:4;display:grid;place-items:center;padding:20px;background:linear-gradient(145deg,rgba(24,50,75,.88),rgba(49,88,112,.9));color:#fff}
 .agent-progress[hidden],.video-link-reveal[hidden]{display:none}
-.agent-progress-top{display:flex;align-items:center;justify-content:space-between;gap:16px;color:#b9d8e5;font-size:11.2px;font-weight:800;letter-spacing:.13em}
-.agent-progress-top strong{color:#fff;font-size:16.8px;letter-spacing:0}
-.agent-progress h3{max-width:600px;margin:20px 0 6px;color:#fff;font:400 clamp(25.76px,3.1vw,40.32px)/1.05 'Caveat Brush',cursive;letter-spacing:.01em}
-.agent-progress p{max-width:630px;margin:0;color:#d6e9ef;font-size:14.56px;line-height:1.5}
-.agent-progress-track{height:8px;margin:22px 0 16px;border-radius:99px;background:rgba(255,255,255,.18);overflow:hidden}
+.agent-progress-card{width:min(470px,100%);padding:25px 27px;border:1px solid rgba(255,255,255,.35);border-radius:22px;background:rgba(24,50,75,.78);box-shadow:0 20px 45px rgba(7,28,43,.25);backdrop-filter:blur(12px)}
+.agent-progress-top{display:flex;align-items:center;justify-content:space-between;gap:16px;color:#b9d8e5;font-size:10.08px;font-weight:800;letter-spacing:.13em}
+.agent-progress-top strong{color:#fff;font-size:15.68px;letter-spacing:0}
+.agent-progress h3{margin:22px 0 5px;color:#fff;font:400 clamp(25.76px,3.1vw,38.08px)/1.05 'Caveat Brush',cursive;letter-spacing:.01em}
+.agent-progress p{margin:0;color:#d6e9ef;font-size:13.44px;line-height:1.45}
+.agent-progress-track{height:7px;margin:21px 0 9px;border-radius:99px;background:rgba(255,255,255,.18);overflow:hidden}
 .agent-progress-track b{display:block;width:0;height:100%;border-radius:inherit;background:#f17f6c;transition:width .45s ease}
-.agent-progress-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 10px;margin:0;padding:0;list-style:none}
-.agent-progress-steps li{display:flex;align-items:flex-start;gap:7px;min-width:0;color:rgba(226,242,247,.52);font-size:11.2px;line-height:1.25;transition:color .25s ease,transform .25s ease}
-.agent-progress-steps li span{display:grid;place-items:center;flex:0 0 21px;width:21px;height:21px;border:1px solid rgba(255,255,255,.25);border-radius:50%;font-size:10.08px}
-.agent-progress-steps li strong{font-weight:600}
-.agent-progress-steps li.is-current{color:#fff;transform:translateY(-2px)}
-.agent-progress-steps li.is-current span{border-color:#f17f6c;background:#f17f6c;color:#fff}
-.agent-progress-steps li.is-done{color:#c2e7d7}
-.agent-progress-steps li.is-done span{border-color:#72c49e;color:#72c49e}
-.agent-progress-steps li.is-done span::before{content:'✓';font-size:12.32px}
-.agent-progress-steps li.is-done span{font-size:0}
+.agent-progress-footer{display:flex;justify-content:space-between;gap:10px;color:#b9d8e5;font-size:11.2px}
+.agent-progress-footer span:first-child{color:#fff;font-weight:700}
+.agent-progress-steps{display:grid;grid-template-columns:repeat(8,1fr);gap:7px;margin:18px 0 0;padding:0;list-style:none}
+.agent-progress-steps li{position:relative;display:flex;justify-content:center}
+.agent-progress-steps li span{display:block;width:9px;height:9px;border:1px solid rgba(255,255,255,.44);border-radius:50%;background:transparent;transition:transform .25s ease,background .25s ease,border-color .25s ease,box-shadow .25s ease}
+.agent-progress-steps li.is-current span{border-color:#f17f6c;background:#f17f6c;box-shadow:0 0 0 5px rgba(241,127,108,.18);transform:scale(1.12)}
+.agent-progress-steps li.is-done span{border-color:#72c49e;background:#72c49e}
 .video-link-reveal{position:absolute;right:18px;bottom:18px;z-index:5;display:flex;align-items:center;gap:11px;padding:9px 12px;border:1px solid rgba(255,255,255,.7);border-radius:999px;background:rgba(24,50,75,.74);backdrop-filter:blur(8px);color:#fff;font-size:11.2px}
 .video-link-reveal span{color:#f7c4b8;font-size:10.08px;font-weight:800;letter-spacing:.1em}
 .video-link-reveal a{color:#fff;text-decoration:none;font-weight:700}
 .video-link-reveal a:hover,.video-link-reveal a:focus-visible{color:#ffd6cc}
-@media(max-width:700px){.agent-progress{padding:20px}.agent-progress-top{font-size:10.08px}.agent-progress h3{font-size:31.36px}.agent-progress p{font-size:13.44px}.agent-progress-steps{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.video-link-reveal{right:12px;bottom:12px;left:12px;justify-content:center}}
+@media(max-width:700px){.agent-progress{padding:14px}.agent-progress-card{padding:21px}.agent-progress-top{font-size:8.96px}.agent-progress h3{font-size:31.36px}.agent-progress p{font-size:12.32px}.agent-progress-footer{font-size:10.08px}.video-link-reveal{right:12px;bottom:12px;left:12px;justify-content:center}}

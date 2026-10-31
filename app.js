@@ -2,14 +2,14 @@ const viewTitles={import:'Import',learn:'Lesson',report:'Report'};
 const state={mode:'balanced',learningStyle:'hide',translation:false,playing:false,currentCueId:null,revealed:new Set(),player:null,playerReady:false,poll:null,content:null,session:null,activeCheckpoint:null,quizAnswers:{},quizSubmitted:false,checkpointNotice:null,checkpointTriggered:new Set(),sessionSeconds:0,youtubeUrl:null,agentReady:false,agentTimer:null};
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const AGENT_STEPS=[
- {label:'Fetching subtitles',detail:'Read an SRT/VTT file, or fetch YouTube subtitles and video metadata through TranscriptAPI.'},
- {label:'Reconstructing complete sentences',detail:'Join fragments across cues into complete semantic sentences.'},
- {label:'Translating sentences',detail:'Generate translations of the complete sentences.'},
- {label:'Analyzing language concepts and cultural context',detail:'Label vocabulary, expressions, grammar, and difficulty; generate cultural notes.'},
- {label:'Locating concepts in the subtitles',detail:'Map concepts back to source subtitle spans and character positions.'},
- {label:'Translating and checking timed subtitles',detail:'Translate each cue, check its alignment with the complete-sentence translation, and repair issues when needed.'},
- {label:'Generating quiz questions',detail:'Create multiple-choice questions supported by subtitle evidence at video checkpoints.'},
- {label:'Validating and packaging',detail:'Check schemas, timings, IDs, and references, then create the ZIP.'}
+ {label:'Fetching subtitles',detail:'Reading the transcript and video metadata.'},
+ {label:'Reconstructing complete sentences',detail:'Joining subtitle fragments into sentences.'},
+ {label:'Translating sentences',detail:'Translating the lesson text.'},
+ {label:'Analyzing language concepts and cultural context',detail:'Finding useful language and culture notes.'},
+ {label:'Locating concepts in the subtitles',detail:'Mapping learning targets to subtitle spans.'},
+ {label:'Translating and checking timed subtitles',detail:'Checking subtitle timing and alignment.'},
+ {label:'Generating quiz questions',detail:'Building checkpoint questions.'},
+ {label:'Validating and packaging',detail:'Checking the lesson before it is ready.'}
 ];
 function toast(message){const el=$('#toast');el.textContent=message;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),2600)}
 function switchView(view){$$('.fade-view').forEach(el=>el.classList.toggle('active',el.id===`${view}View`));$$('.fade-nav').forEach(el=>el.classList.toggle('active',el.dataset.view===view));$('#topTitle').textContent=viewTitles[view];$('#appShell').classList.toggle('landing-mode',view==='import');window.scrollTo({top:0,behavior:'smooth'})}
@@ -127,7 +127,8 @@ if(storyBoard){
  updateStory(0,'auto');
 }
 function startContent(content){clearInterval(state.poll);clearTimeout(state.agentTimer);if(state.player){try{state.player.destroy()}catch{}state.player=null}state.playerReady=false;state.playing=false;state.content=content;state.session=FadeEngine.emptySession(content.manifest.content_id);state.session.mode=state.mode='balanced';state.learningStyle='hide';state.session.learning_style=state.learningStyle;state.translation=false;state.revealed.clear();state.checkpointTriggered.clear();state.sessionSeconds=0;state.activeCheckpoint=null;state.quizAnswers={};state.quizSubmitted=false;state.currentCueId=null;state.checkpointNotice=null;const viewingCount=recordViewing(content.videoId),courseName=languageName(content.language);$('#toggleTranslation').textContent=`${content.translation.toUpperCase()||'EN'} translation`;$('#durationTime').textContent=formatTime(content.duration);$('#learnCourseLabel').textContent=`${courseName} Video Lesson`;$('#learnTitle').textContent=content.title;$('#learnMeta').textContent=`VIEWING ${String(viewingCount).padStart(2,'0')}`;$('#ytFrame').setAttribute('title',`${content.title} video`);$('#feedbackQuestion').textContent=`Would you use Fade for another ${courseName.toLowerCase()} scene?`;$('#quizCount').textContent=`0 / ${content.quizzes.checkpoints.length}`;$('#revealCount').textContent='0';$('#progressStat').textContent='0%';$('#reportScore').textContent='—';$('#reportReveal').textContent='0';$('#reportMode').textContent='Balanced';$('#feedbackNote').textContent='Your answer helps us improve the learning flow.';$$('.feedback-option').forEach(button=>button.classList.remove('is-selected'));updateLearningStyleUI();renderSessionReview();$('#subtitleText').textContent='Press Play to show subtitles in sync with the video.';setNextCheckpoint();switchView('learn');startAgentProgress(content)}
-function initPlayer(videoId){clearInterval(state.poll);state.playerReady=false;if(state.player){try{state.player.destroy()}catch{}state.player=null}if(!window.YT||!YT.Player){$('#subtitleText').textContent='The YouTube player failed to load. Check your connection and try again.';return}state.player=new YT.Player('ytFrame',{videoId,playerVars:{playsinline:1,rel:0,modestbranding:1,cc_load_policy:0},events:{onReady:()=>{state.playerReady=true;const d=state.player.getDuration();if(d>0&&(!state.content.duration||Math.abs(d-state.content.duration)>60))toast('The lesson duration differs from the video. Check the subtitle timestamps.');state.poll=setInterval(syncPlayer,200)},onStateChange:onPlayerStateChange,onError:e=>{const messages={2:'Invalid video ID',5:'This video cannot be played in the HTML5 player',100:'This video is unavailable or private',101:'The video owner does not allow embedding',150:'The video owner does not allow embedding'};toast(`YouTube playback error: ${messages[e.data]||`Code ${e.data}`}`);$('#subtitleText').textContent='This video cannot be embedded. Try a public video that allows embedding.'}}})}
+function hideAgentProgress(){const progress=$('#agentProgress');if(progress)progress.hidden=true}
+function initPlayer(videoId){clearInterval(state.poll);state.playerReady=false;if(state.player){try{state.player.destroy()}catch{}state.player=null}if(!window.YT||!YT.Player){$('#subtitleText').textContent='The YouTube player failed to load. Check your connection and try again.';return}state.player=new YT.Player('ytFrame',{videoId,playerVars:{playsinline:1,rel:0,modestbranding:1,cc_load_policy:0},events:{onReady:()=>{state.playerReady=true;hideAgentProgress();$('#videoLinkReveal').hidden=false;const d=state.player.getDuration();if(d>0&&(!state.content.duration||Math.abs(d-state.content.duration)>60))toast('The lesson duration differs from the video. Check the subtitle timestamps.');state.poll=setInterval(syncPlayer,200)},onStateChange:onPlayerStateChange,onError:e=>{const messages={2:'Invalid video ID',5:'This video cannot be played in the HTML5 player',100:'This video is unavailable or private',101:'The video owner does not allow embedding',150:'The video owner does not allow embedding'};hideAgentProgress();toast(`YouTube playback error: ${messages[e.data]||`Code ${e.data}`}`);$('#subtitleText').textContent='This video cannot be embedded. Try a public video that allows embedding.'}}})}
 window.onYouTubeIframeAPIReady=()=>{if(state.content&&state.agentReady)initPlayer(state.content.videoId)};
 function onPlayerStateChange(e){state.playing=e.data===YT.PlayerState.PLAYING;$('#playDemo').textContent=state.playing?'Ⅱ Pause':'▶ Play'}
 function formatTime(sec){sec=Math.max(0,Math.floor(sec||0));return`${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`}
@@ -136,17 +137,14 @@ function checkCheckpoints(time){const checkpoints=state.content.quizzes.checkpoi
 function setNextCheckpoint(){if(!state.content)return;const cp=(state.content.quizzes.checkpoints||[]).find(x=>!state.session?.completed_checkpoint_ids.includes(x.id)&&!state.session?.skipped_checkpoint_ids.includes(x.id));$('#checkpointTime').textContent=cp?formatTime(cp.trigger_time):'Done';$('#checkpointCopy').textContent=cp?`The video pauses at ${formatTime(cp.trigger_time)}. Answer a quick question or skip it.`:'All checkpoints are complete.';$('#quizCount').textContent=`${state.session?.completed_checkpoint_ids.length||0} / ${state.content.quizzes.checkpoints.length}`}
 function startAgentProgress(content){
  clearTimeout(state.agentTimer);state.agentReady=false;
- const progress=$('#agentProgress'),steps=$('#agentProgressSteps'),bar=$('#agentProgressBar'),percent=$('#agentProgressPercent'),copy=$('#agentProgressCopy'),linkReveal=$('#videoLinkReveal'),link=$('#videoLink');
- if(!progress||!steps||!bar||!percent||!copy)return;
- steps.innerHTML=AGENT_STEPS.map((step,index)=>`<li data-agent-step="${index}"><span>${index+1}</span><strong>${escapeHtml(step.label)}</strong></li>`).join('');
+ const progress=$('#agentProgress'),bar=$('#agentProgressBar'),percent=$('#agentProgressPercent'),linkReveal=$('#videoLinkReveal'),link=$('#videoLink');
+ if(!progress||!bar||!percent)return;
  progress.hidden=false;if(linkReveal)linkReveal.hidden=true;if(link){link.href=youtubeUrlFromId(content.videoId);link.textContent=youtubeUrlFromId(content.videoId)}
  let current=0;
  const paint=()=>{
   const finished=current>=AGENT_STEPS.length,value=finished?100:Math.round((current/AGENT_STEPS.length)*100);
   percent.textContent=`${value}%`;bar.style.width=`${value}%`;
-  $$('#agentProgressSteps li').forEach((item,index)=>{item.classList.toggle('is-done',index<current);item.classList.toggle('is-current',index===current&&!finished)});
-  if(finished){copy.textContent='Your subtitles, learning support, and quick check are ready.';progress.querySelector('h3').textContent='Analysis complete';state.agentReady=true;progress.hidden=true;if(linkReveal)linkReveal.hidden=false;initPlayer(content.videoId);return}
-  progress.querySelector('h3').textContent=AGENT_STEPS[current].label;copy.textContent=AGENT_STEPS[current].detail;
+  if(finished){state.agentReady=true;initPlayer(content.videoId);return}
   state.agentTimer=setTimeout(()=>{current+=1;paint()},650);
  };
  paint();
