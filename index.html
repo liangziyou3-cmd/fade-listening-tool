@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Fade Listening · Understand more of the stories you love</title>
-  <meta name="description" content="Fade helps intermediate language learners understand real video through focused listening, gentle subtitle support, and a short review." />
-  <meta property="og:title" content="Fade Listening · Understand more of the stories you love" />
-  <meta property="og:description" content="A calmer listening practice for intermediate learners. Listen first, reveal only what you need, then check what stayed with you." />
+  <title>Fade Listening · Learn languages with the videos you love</title>
+  <meta name="description" content="Turn a YouTube video you enjoy into language practice with smart subtitles for intermediate learners." />
+  <meta property="og:title" content="Fade Listening · Learn languages with the videos you love" />
+  <meta property="og:description" content="Turn a YouTube video you enjoy into language practice. Watch, listen, and learn with smart subtitles that highlight or hide the language support you need." />
   <meta property="og:type" content="website" />
   <meta name="theme-color" content="#eef8ff" />
   <script>try{document.documentElement.dataset.theme=localStorage.getItem('fade-theme')==='dark'?'dark':'light'}catch{document.documentElement.dataset.theme='light'}</script>
@@ -19,78 +19,205 @@
   <link rel="stylesheet" href="generic.css" />
   <link rel="stylesheet" href="product.css" />
   <link rel="stylesheet" href="dark.css" />
+  <link rel="stylesheet" href="demo-auth.css" />
 </head>
 <body>
+  <section id="authView" class="auth-view" aria-label="Demo account access">
+    <div class="auth-card">
+      <div class="auth-brand"><span>↗</span> Fade Listening</div>
+      <span class="fade-eyebrow">WELCOME TO FADE</span>
+      <h1>Turn videos into lessons.</h1>
+      <p class="auth-intro">Choose a demo role to explore lessons and keep a separate course history in this browser.</p>
+      <div class="auth-tabs" role="tablist" aria-label="Account access"><button id="authLoginTab" class="active" type="button" role="tab" aria-selected="true" aria-controls="loginPanel">Log in</button><button id="authRegisterTab" type="button" role="tab" aria-selected="false" aria-controls="registerPanel">Register</button></div>
+      <form id="loginPanel" class="auth-form" role="tabpanel" novalidate>
+        <label>Email<input name="email" type="email" autocomplete="email" required placeholder="you@example.com"></label>
+        <label>Password<input name="password" type="password" autocomplete="current-password" required placeholder="Enter any password"></label>
+        <fieldset><legend>Continue as</legend><label class="auth-role"><input type="radio" name="role" value="teacher" checked><span><strong>Teacher</strong><small>Review and share lessons</small></span></label><label class="auth-role"><input type="radio" name="role" value="student"><span><strong>Student</strong><small>Learn as Student 1</small></span></label></fieldset>
+        <button class="fade-primary auth-submit" type="submit">Log in to demo <b>↗</b></button>
+        <small>Demo only: any email and password work. No credentials are saved.</small>
+      </form>
+      <form id="registerPanel" class="auth-form" role="tabpanel" hidden>
+        <label>Email<input name="email" type="email" autocomplete="email" placeholder="you@example.com"></label>
+        <label>Password<input name="password" type="password" autocomplete="new-password" placeholder="Create a password"></label>
+        <button class="fade-primary auth-submit" type="submit">Create account</button>
+        <small>Registration is coming soon. This demo uses preset accounts.</small>
+      </form>
+      <p id="authMessage" class="auth-message" role="status" aria-live="polite"></p>
+    </div>
+  </section>
   <a class="skip-link" href="#main-content">Skip to content</a>
   <div class="fade-shell landing-mode" id="appShell" data-typeface="baloo">
     <aside class="fade-sidebar">
       <div class="fade-brand"><span>↗</span> Fade Listening</div>
+      <button class="fade-nav fade-nav-back" data-view="import" type="button" title="Back to landing"><span>←</span>Back to landing</button>
       <div class="fade-label">CONTENT LAB</div>
-      <nav>
-        <button class="fade-nav active" data-view="import"><span>＋</span>Import</button>
+      <nav id="primaryNav" aria-label="Main navigation">
+        <button class="fade-nav" data-view="home" type="button"><span>⌂</span>Home</button>
+        <button class="fade-nav" data-view="workspaceImport"><span>＋</span>Import</button>
         <button class="fade-nav" data-view="learn"><span>◉</span>Lesson</button>
         <button class="fade-nav" data-view="report"><span>▧</span>Report</button>
       </nav>
-      <div class="fade-sidebar-note"><strong>Link first</strong><span>Fade Agent prepares the lesson<br>from a YouTube video.</span></div>
     </aside>
+    <button id="sidebarToggle" class="sidebar-toggle" type="button" aria-label="Collapse navigation" aria-controls="primaryNav" aria-expanded="true" title="Collapse navigation"><span aria-hidden="true">‹</span></button>
     <main class="fade-main" id="main-content">
-      <header class="fade-topbar"><div><span class="crumb">FADE LISTENING /</span><strong id="topTitle">Import</strong></div><div class="topbar-actions"><span class="schema-chip">YouTube Agent</span><button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false"><span class="theme-icon" aria-hidden="true">☾</span><span class="theme-label">Night mode</span></button></div></header>
+      <header class="fade-topbar"><div><span class="crumb">FADE LISTENING /</span><strong id="topTitle">Import</strong></div><div class="topbar-actions"><span id="demoAccountName" class="demo-account-name"></span><button id="demoLogout" class="demo-logout" type="button">Log out</button><button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false"><span class="theme-icon" aria-hidden="true">☾</span><span class="theme-label">Night mode</span></button></div></header>
 
       <section id="importView" class="fade-view active landing-page">
-        <nav class="landing-nav"><a class="landing-logo" href="#why-fade"><span>↗</span> Fade</a><div class="landing-links"><a href="#why-fade">Why Fade</a><a href="#how-it-works">How it works</a><a href="#demo">Demo</a></div><div class="landing-nav-actions"><button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false"><span class="theme-icon" aria-hidden="true">☾</span><span class="theme-label">Night mode</span></button><button class="nav-cta" id="navTry">Start the lesson <b>↗</b></button></div></nav>
-        <div class="landing-hero" id="why-fade"><div class="hero-copy"><span class="landing-kicker">INTERMEDIATE SPANISH LISTENING</span><h1>Understand more<br><em>of the stories you love.</em></h1><p>Practice with real video in a calmer way. Listen first, reveal only what you need, and check what stayed with you.</p><div class="hero-actions"><button class="landing-primary" id="loadDemo">Start the guided lesson <b>↗</b></button><button class="landing-text-btn" data-scroll="how-it-works">See how it works <span>↓</span></button></div><div class="hero-proof"><span class="proof-avatars"><i>es</i><i>en</i><i>fr</i></span><span>Designed for intermediate learners<br><b>one scene at a time</b></span></div></div><div class="hero-visual"><div class="sun-glow"></div><div class="cloud cloud-one"></div><div class="cloud cloud-two"></div><div class="phone-mockup"><div class="phone-top"><span>9:41</span><i></i><span>•••</span></div><div class="phone-scene"><span class="scene-label">EPISODE 02</span><strong>Hola</strong><small>A short story in Spanish</small><div class="scene-play">▶</div></div><div class="phone-caption"><span>Esta es la historia de Lola y Ana, que</span><b>comparten un piso</b><small>Tap a phrase when you need a little help</small></div><div class="phone-progress"><i></i></div></div><div class="float-note note-one"><b>01</b><span><strong>Adaptive fade</strong><small>Subtitles adapt to your level</small></span></div><div class="float-note note-two"><b>02</b><span><strong>Tap to reveal</strong><small>Tap a phrase for help</small></span></div><div class="float-note note-three"><b>03</b><span><strong>Quick check</strong><small>Check what you understood</small></span></div></div></div>
-        <div class="landing-trust"><span>MADE FOR</span><b>intermediate learners</b><i></i><span>BUILT AROUND</span><b>real video</b><i></i><span>AVAILABLE IN</span><b>3 sample languages</b></div>
-        <section class="landing-tagline" id="tagline" aria-labelledby="taglineTitle">
-          <span class="landing-kicker">THE POINT OF FADE</span>
-          <h2 id="taglineTitle" class="tagline-reveal"><span data-reveal-word>Stay with the story.</span> <span data-reveal-word>Build the listening habit.</span></h2>
-          <p>Real video gives you a reason to listen. Small, timely support helps you keep going.</p>
-        </section>
-        <div class="landing-section journey-section" id="how-it-works">
-          <div class="journey-intro"><span class="landing-kicker">THE LEARNER JOURNEY</span><div class="journey-intro-row"><h2>From a YouTube link<br><em>to Mia's review.</em></h2><div class="journey-character-wrap"><div class="journey-character" aria-hidden="true"><img class="journey-avatar" src="mia-avatar.png" alt="" /></div><div class="character-note"><strong>Meet Mia</strong><span>An intermediate learner</span></div></div><p>Mia starts with one YouTube story. Fade Agent turns the link into a focused listening lesson, then guides her from first listen to review.</p></div></div>
-          <div class="journey-story" aria-label="Mia's five-scene listening story, from a YouTube link to student review">
-            <div class="storyboard-shell">
-              <button class="storyboard-arrow storyboard-prev" type="button" aria-label="Previous story scene">←</button>
-              <div class="storyboard" id="journeyBoard" tabindex="0">
-                <article class="journey-story-slide is-active" data-story-slide="0"><div class="story-slide-art art-start"><span class="art-window"></span><span class="art-play">▶</span><small>MIA CHOOSES A STORY</small></div><div class="story-slide-copy"><span class="journey-story-label">STEP 01 · CHOOSE</span><h3>Mia finds a YouTube story she wants to understand.</h3><p>She picks a real video that matches her interests and copies its YouTube link into Fade Listening.</p><span class="journey-story-tag">Choose a real story</span></div></article>
-                <article class="journey-story-slide" data-story-slide="1"><div class="story-slide-art art-goal"><span class="art-target">✦</span><small>FADE AGENT IS READY</small></div><div class="story-slide-copy"><span class="journey-story-label">STEP 02 · ANALYZE</span><h3>Fade Agent turns the link into practice.</h3><p>The Agent prepares synced subtitles, translation, difficult-word targets, and a short comprehension check for the video.</p><span class="journey-story-tag">Analyze the YouTube link</span></div></article>
-                <article class="journey-story-slide" data-story-slide="2"><div class="story-slide-art art-watch"><span class="art-subtitle">comparten un piso</span><span class="art-wave">)))</span><small>MIA STARTS THE LESSON</small></div><div class="story-slide-copy"><span class="journey-story-label">STEP 03 · START</span><h3>Mia opens a ready-to-use listening lesson.</h3><p>The video and its learning support are already connected, so she can start listening without preparing files or matching subtitles.</p><span class="journey-story-tag">Start with the first scene</span></div></article>
-                <article class="journey-story-slide" data-story-slide="3"><div class="story-slide-art art-stuck"><span class="art-question">?</span><span class="art-bubble">What did they say?</span><small>CHOOSE YOUR SUPPORT</small></div><div class="story-slide-copy"><span class="journey-story-label">STEP 04 · PRACTICE</span><h3>She chooses Hide or Highlight for difficult words.</h3><p>Mia listens for the main idea, then either hides difficult phrases for a challenge or highlights them for a gentler pass.</p><span class="journey-story-tag">Listen, hide, or highlight</span></div></article>
-                <article class="journey-story-slide" data-story-slide="4"><div class="story-slide-art art-finish"><span class="art-check">✓</span><span class="art-spark">✦</span><small>CHECK AND REVIEW</small></div><div class="story-slide-copy"><span class="journey-story-label">STEP 05 · REFLECT</span><h3>She completes the check and reviews.</h3><p>The episode quiz confirms what Mia understood and leaves her with useful phrases to revisit after the story.</p><span class="journey-story-tag">Take the quiz and review</span></div></article>
-              </div>
-              <button class="storyboard-arrow storyboard-next" type="button" aria-label="Next story scene">→</button>
-            </div>
-            <div class="storyboard-footer"><div class="storyboard-dots" role="tablist" aria-label="Choose a story scene"><button class="is-active" type="button" role="tab" aria-label="Scene 1" aria-selected="true"></button><button type="button" role="tab" aria-label="Scene 2" aria-selected="false"></button><button type="button" role="tab" aria-label="Scene 3" aria-selected="false"></button><button type="button" role="tab" aria-label="Scene 4" aria-selected="false"></button><button type="button" role="tab" aria-label="Scene 5" aria-selected="false"></button></div><span class="storyboard-hint">Swipe or use the arrows to follow Mia</span></div>
-            <div class="journey-story-end"><span class="landing-kicker">THE TAKEAWAY</span><strong>One clearer story. A few useful expressions. A reason to come back.</strong><div><span>Scene understood</span><span>Useful phrases</span><span>Next step</span></div></div>
+        <nav class="landing-nav"><a class="landing-logo" href="#why-fade"><span>↗</span> Fade</a><div class="landing-links"><a href="#demo">Start with a video</a><a href="#how-it-works">How it works</a></div><div class="landing-nav-actions"><button id="landingHome" class="landing-home-link" type="button">My courses</button><button id="landingLogout" class="landing-home-link" type="button">Log out</button><button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false"><span class="theme-icon" aria-hidden="true">☾</span><span class="theme-label">Night mode</span></button></div></nav>
+        <div class="landing-hero" id="why-fade">
+          <div class="hero-copy"><span class="landing-kicker">FOR LANGUAGE TEACHERS & LEARNERS</span><h1>Learn languages<br><em>with the videos you love.</em></h1><p>Turn a YouTube video you enjoy into language practice. Watch, listen, and learn with smart subtitles that highlight or hide the language support you need.</p><div class="hero-actions"><button class="landing-text-btn" data-scroll="how-it-works">See how it works <span>↓</span></button></div><div class="hero-proof"><span class="proof-avatars"><i>es</i><i>fr</i></span><span>Spanish and French lessons<br><b>with a translation you choose</b></span></div></div>
+          <div class="hero-visual"><div class="sun-glow"></div><div class="cloud cloud-one"></div><div class="cloud cloud-two"></div>
+            <div class="desktop-mockup" aria-label="Fade Listening lesson shown on a desktop screen"><div class="desktop-screen"><div class="desktop-topbar"><span class="desktop-brand"><b>↗</b> Fade Listening</span><span class="desktop-topbar-label">YOUR VIDEO LESSON</span><span class="desktop-window-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><div class="desktop-lesson"><div class="desktop-video"><span>YOUR VIDEO</span><b aria-hidden="true">▶</b><small>Watch · listen · learn</small></div><div class="desktop-subtitles"><small>SPANISH SUBTITLES</small><p>Aprendemos con historias.</p><small>SYNCED TRANSLATION</small><p class="desktop-translation">我们通过故事<b>学习</b>。</p><div class="desktop-support"><span>Hide</span><span>Highlight</span></div></div></div><div class="desktop-progress"><i></i></div></div><span class="desktop-stand" aria-hidden="true"></span></div>
+            <div class="hero-language-note hero-note-en"><b>EN</b><strong>Hello</strong></div><div class="hero-language-note hero-note-es"><b>ES</b><strong>Hola</strong></div><div class="hero-language-note hero-note-fr"><b>FR</b><strong>Bonjour</strong></div><div class="hero-language-note hero-note-de"><b>DE</b><strong>Hallo</strong></div><div class="hero-language-note hero-note-zh"><b>ZH</b><strong>你好</strong></div>
           </div>
         </div>
-        <div class="landing-demo" id="demo"><div class="demo-copy"><span class="landing-kicker">CHOOSE A SAMPLE LANGUAGE</span><h2 id="demoTitle">Try a guided lesson</h2><p id="demoDescription">The current lesson is in Spanish. English and French are available as previews below.</p><div class="language-picker" role="list" aria-label="Choose a sample language"><button class="language-option is-active" type="button" role="listitem" data-language="Spanish" data-title="Try a guided lesson" data-description="The current lesson is in Spanish. English and French are available as previews below."><span class="language-code">ES</span><span class="language-copy"><strong>Spanish</strong><small>Current guided lesson</small></span><b>↗</b></button><button class="language-option" type="button" role="listitem" data-language="English" data-title="Preview English" data-description="English is one of three sample languages currently supported. Select Spanish to start the guided lesson."><span class="language-code">EN</span><span class="language-copy"><strong>English</strong><small>Sample language</small></span><b>↗</b></button><button class="language-option" type="button" role="listitem" data-language="French" data-title="Preview French" data-description="French is one of three sample languages currently supported. Select Spanish to start the guided lesson."><span class="language-code">FR</span><span class="language-copy"><strong>French</strong><small>Sample language</small></span><b>↗</b></button></div><div class="youtube-import-card"><label for="youtubeUrlInput">Start with a YouTube video</label><p>Paste a public YouTube link. Fade Agent will prepare the subtitles, translation, difficult-word support, and quick check for the lesson.</p><div class="youtube-url-row"><input id="youtubeUrlInput" type="url" inputmode="url" autocomplete="url" placeholder="https://www.youtube.com/watch?v=..." aria-describedby="youtubeUrlStatus" aria-invalid="false"><button id="useYoutubeUrl" class="fade-outline" type="button">Analyze with Fade Agent</button></div><small id="youtubeUrlStatus" class="youtube-url-status" role="status">YouTube links only.</small></div></div><div class="language-stack" role="group" aria-label="Three sample language cards"><div class="language-stack-glow"></div><div class="stack-card stack-card-fr is-back" data-stack-language="French"><span>FR</span><strong>Bonjour</strong><small>French preview</small></div><div class="stack-card stack-card-en is-middle" data-stack-language="English"><span>EN</span><strong>Hello</strong><small>English preview</small></div><div class="stack-card stack-card-es is-selected is-front" data-stack-language="Spanish"><span>ES</span><strong>Hola</strong><small>Current lesson</small><i>↗</i></div><div class="stack-caption"><span>3 sample languages</span><b>Choose one to preview</b></div></div></div>
-        <section class="landing-faq" id="faq" aria-labelledby="faqTitle">
-          <div class="faq-intro"><span class="landing-kicker">QUESTIONS BEFORE YOU START</span><h2 id="faqTitle">A focused lesson, with room to listen.</h2><p>Fade is designed for one clear practice session at a time.</p></div>
-          <div class="faq-list">
-            <details><summary>Who is Fade for?</summary><p>Fade is for intermediate learners who can follow some real speech and want more listening practice outside class.</p></details>
-            <details><summary>What do I need to begin?</summary><p>Paste a YouTube video link. Fade Agent uses the link to prepare the listening lesson.</p></details>
-            <details><summary>Will the subtitles disappear completely?</summary><p>No. Fade hides selected phrases based on the lesson level. You can reveal a phrase when you need it.</p></details>
-            <details><summary>How is the lesson content prepared?</summary><p>Fade Agent analyzes the YouTube video and prepares synced subtitles, translation, difficult-word support, and a short check before practice begins.</p></details>
-            <details><summary>What happens after the video?</summary><p>A short checkpoint quiz checks the main idea and leaves you with useful phrases to review.</p></details>
-            <details><summary>Which languages are available?</summary><p>The current demo includes Spanish, English, and French. Fade Agent can prepare listening lessons for the languages supported in its analysis workflow.</p></details>
+        <div class="landing-trust"><span>VIDEO LANGUAGES</span><b>Spanish</b><i></i><b>French</b><i></i><span>LEARN WITH</span><b>real video</b></div>
+        <section class="video-start-section" id="demo" aria-labelledby="videoStartTitle">
+          <div class="video-start-intro"><span class="landing-kicker">START WITH A VIDEO</span><h2 id="videoStartTitle">Bring a video to Fade.</h2><p>Paste a YouTube video link to start a guided language practice session, or try our Spanish demo to see Fade in action.</p></div>
+          <div class="video-entry-grid">
+            <div class="video-entry-panel analysis-panel">
+              <span class="video-entry-label">ANALYZE YOUR VIDEO</span><h3>Analyze my YouTube video</h3>
+              <label class="video-entry-field-label" for="youtubeUrlInput">YouTube video link</label>
+              <input id="youtubeUrlInput" class="youtube-url-input" type="url" inputmode="url" autocomplete="url" placeholder="paste your youtube url here" aria-describedby="youtubeUrlStatus" aria-invalid="false">
+              <div class="language-select-grid"><label>Original video language<select id="sourceLanguage" name="sourceLanguage"><option value="" selected>Select language</option><option value="es">Spanish</option><option value="fr">French</option><option value="" disabled>More languages coming soon</option></select></label><label>Translate subtitles to<select id="translationLanguage" name="translationLanguage"><option value="" selected>Select language</option><option value="en">English</option><option value="es">Spanish</option><option value="fr">French</option><option value="de">German</option><option value="zh">Chinese</option><option value="ja">Japanese</option><option value="ko">Korean</option></select></label></div>
+              <p class="translation-helper">Fade keeps the original subtitles and your translation aligned sentence by sentence.</p>
+              <button id="useYoutubeUrl" class="landing-primary full" type="button">Start analysis <b>↗</b></button>
+              <div class="landing-agent-progress" id="landingAgentProgress" role="status" aria-live="polite"><div class="agent-progress-top"><span id="landingAgentStep">Ready to analyze your video</span><strong id="landingAgentPercent">0%</strong></div><div class="agent-progress-track" aria-hidden="true"><b id="landingAgentBar"></b></div><small id="youtubeUrlStatus" class="youtube-url-status">YouTube links only.</small></div>
+              <button id="landingStartLearning" class="landing-primary full start-learning-button" type="button" hidden>Start learning <b>↗</b></button>
+            </div>
+            <div class="video-entry-panel demo-panel"><span class="video-entry-label">A READY-MADE LESSON</span><h3>Try the Spanish demo</h3><p>Watch a prepared video lesson with smart subtitles, highlighted phrases, and adaptive support.</p><span class="translation-chip">Original subtitles + synced translation</span><button id="trySpanishDemo" class="landing-primary full" type="button">Try our Spanish demo <b>↗</b></button></div>
           </div>
         </section>
-        <footer class="landing-footer"><span>Fade Listening</span><span>Local first language practice · No account required</span><span class="footer-links"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="#demo">Start a lesson ↗</a></span></footer>
+        <section class="landing-tagline" id="tagline" aria-labelledby="taglineTitle">
+          <span class="landing-kicker">THE POINT OF FADE</span>
+          <h2 id="taglineTitle" class="tagline-reveal"><span data-reveal-word>Learn through the videos you love.</span></h2>
+          <p>Watch for the story. Fade Agent picks out useful words and expressions in context. Practice them with support when you need it.</p>
+        </section>
+        <div class="landing-section journey-section" id="how-it-works">
+          <div class="journey-intro"><span class="landing-kicker">THE USER JOURNEY</span><div class="journey-intro-row"><h2>Teach with video.<br><em>Learn through stories.</em></h2><p>Fade helps teachers prepare thoughtful lessons and gives students a more engaging way to practice with real video.</p></div></div>
+          <div class="journey-role-grid">
+            <article class="journey-role-card teacher-path">
+              <div class="journey-role-head"><span class="journey-role-label">FOR TEACHERS</span><img class="journey-role-illustration" src="assets/teacher.png" alt="Illustration of a teacher preparing a lesson"></div>
+              <h3>Turn a video into a ready-to-review lesson.</h3>
+              <p>Fade Agent takes care of the first lesson draft, so teachers can spend their time refining what matters for their class.</p>
+              <ol class="journey-role-steps">
+                <li><b>01</b><span><strong><i class="journey-step-icon" aria-hidden="true">↗</i>Choose a video</strong>Paste a YouTube link and select the original video language and a translation language.</span></li>
+                <li><b>02</b><span><strong><i class="journey-step-icon" aria-hidden="true">✦</i>Let Fade prepare</strong>Get timed subtitles and translation, useful words and expressions, culture notes, and checkpoints.</span></li>
+                <li><b>03</b><span><strong><i class="journey-step-icon" aria-hidden="true">✓</i>Review, edit, and share</strong>Adjust the lesson, then share the finished course with students.</span></li>
+              </ol>
+              <div class="journey-role-tags"><span>Automatic lesson prep</span><span>Teacher-reviewed content</span><span>Share with students</span></div>
+            </article>
+            <article class="journey-role-card student-path">
+              <div class="journey-role-head"><span class="journey-role-label">FOR STUDENTS</span><img class="journey-role-illustration" src="assets/student.jpeg" alt="Illustration of a student ready to learn"></div>
+              <h3>Learn from a video you already want to watch.</h3>
+              <p>Make out-of-class practice feel less like homework: follow a story you enjoy and pick up useful language along the way.</p>
+              <ol class="journey-role-steps">
+                <li><b>01</b><span><strong><i class="journey-step-icon" aria-hidden="true">↗</i>Open a lesson</strong>Choose a teacher-shared course or bring in a YouTube video of your own.</span></li>
+                <li><b>02</b><span><strong><i class="journey-step-icon" aria-hidden="true">▶</i>Watch and learn</strong>Follow synchronized subtitles and translation; adjust which language elements are hidden or highlighted.</span></li>
+                <li><b>03</b><span><strong><i class="journey-step-icon" aria-hidden="true">✓</i>Check your understanding</strong>Meet checkpoints as you watch, explore culture notes, and review your answers in the report.</span></li>
+              </ol>
+              <div class="journey-role-tags"><span>Learn in context</span><span>Choose your support</span><span>Track your understanding</span></div>
+            </article>
+          </div>
+        </div>
+        <section class="landing-faq" id="faq" aria-labelledby="faqTitle">
+          <div class="faq-intro"><span class="landing-kicker">QUESTIONS BEFORE YOU START</span><h2 id="faqTitle">Good to know before you press play.</h2><p>Here is what Fade prepares, what you can change, and what to expect from a lesson.</p></div>
+          <div class="faq-list">
+            <details><summary>How does Fade turn a video into a lesson?</summary><p>Fade Agent uses available subtitles or a transcript to build timed subtitle lines and translations, identify useful language, add culture notes and comprehension checks, then validate the lesson content.</p></details>
+            <details><summary>Does Fade transcribe every video?</summary><p>Not yet. The Agent relies on subtitles or a transcript that it can access; it does not download the video or transcribe its audio. The video must also be playable in the embedded player.</p></details>
+            <details><summary>Which languages can I learn?</summary><p>Spanish and French are currently supported as video languages. Each has its own language-specific analysis standards. You can choose from the available translation languages.</p></details>
+            <details><summary>What is the difference between Teacher and Student mode?</summary><p>Teacher mode lets you review and edit the Agent's lesson content before sharing it with students. Student mode skips that review and goes straight to video learning.</p></details>
+            <details><summary>What can teachers review or edit?</summary><p>Teachers can edit sentence translations, add or remove language-element annotations, manage culture notes, and change quiz questions and answers.</p></details>
+            <details><summary>How does the student lesson work?</summary><p>The video and subtitles stay in sync. Students can show the translation, adjust the subtitle-element hide or highlight strategy, explore culture notes, complete checkpoints, and review answers in their report.</p></details>
+          </div>
+        </section>
+        <footer class="landing-footer"><span>Fade Listening</span><span>Real videos · Useful language · Learning in context</span><span class="footer-links"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="#demo">Start with a video ↗</a></span></footer>
+      </section>
+
+      <section id="workspaceImportView" class="fade-view workspace-import-view">
+        <div class="workspace-import-intro"><span class="fade-eyebrow">IMPORT A VIDEO</span><h1>Bring a YouTube story into Fade.</h1><p>Paste a YouTube link, choose the subtitle languages, and let Fade prepare a focused listening lesson.</p></div>
+        <div class="workspace-import-card fade-panel">
+          <div class="workspace-import-copy"><span class="video-entry-label">YOUR VIDEO</span><h2>Analyze my YouTube video</h2><p>Fade keeps the original subtitles and your translation aligned sentence by sentence.</p></div>
+          <label class="video-entry-field-label" for="workspaceYoutubeUrlInput">YouTube video link</label>
+          <input id="workspaceYoutubeUrlInput" class="youtube-url-input" type="url" inputmode="url" autocomplete="url" placeholder="paste your youtube url here" aria-describedby="workspaceYoutubeUrlStatus" aria-invalid="false">
+          <div class="language-select-grid"><label>Original video language<select id="workspaceSourceLanguage" name="workspaceSourceLanguage"><option value="" selected>Select language</option><option value="es">Spanish</option><option value="fr">French</option><option value="" disabled>More languages coming soon</option></select></label><label>Translate subtitles to<select id="workspaceTranslationLanguage" name="workspaceTranslationLanguage"><option value="" selected>Select language</option><option value="en">English</option><option value="es">Spanish</option><option value="fr">French</option><option value="de">German</option><option value="zh">Chinese</option><option value="ja">Japanese</option><option value="ko">Korean</option></select></label></div>
+          <button id="workspaceUseYoutubeUrl" class="fade-primary full workspace-import-button" type="button">Start analysis <b>↗</b></button>
+          <div class="workspace-agent-progress" role="status" aria-live="polite"><div class="agent-progress-top"><span id="workspaceAgentStep">Ready to analyze your video</span><strong id="workspaceAgentPercent">0%</strong></div><div class="agent-progress-track" aria-hidden="true"><b id="workspaceAgentBar"></b></div><small id="workspaceYoutubeUrlStatus" class="youtube-url-status">YouTube links only.</small></div>
+          <button id="workspaceStartLearning" class="fade-primary full start-learning-button" type="button" hidden>Start learning <b>↗</b></button>
+        </div>
+      </section>
+
+      <section id="homeView" class="fade-view home-view">
+        <div class="learn-heading"><div><span class="fade-eyebrow">YOUR LIBRARY</span><h1>My courses</h1><p>Continue a saved lesson or start a new video.</p></div><button class="fade-primary" data-view-target="workspaceImport" type="button">New course <b>↗</b></button></div>
+        <div id="courseList" class="course-list" aria-live="polite"><p class="course-empty">Loading saved courses…</p></div>
+      </section>
+
+      <section id="modeView" class="fade-view mode-view">
+        <div class="learn-heading"><div><span class="fade-eyebrow">CHOOSE A MODE</span><h1 id="modeCourseTitle">Your lesson is ready.</h1><p>Choose how to prepare this lesson before watching.</p></div><button class="fade-outline" data-view-target="home" type="button">Back to Home</button></div>
+        <div class="mode-choice-grid">
+          <article class="mode-choice"><span class="fade-eyebrow">REVIEW FIRST</span><h2>Teacher mode</h2><p>Check translations, learning targets, culture notes, and quiz answers before the lesson.</p><button id="chooseTeacherMode" class="fade-primary" type="button">Review lesson content</button></article>
+          <article class="mode-choice"><span class="fade-eyebrow">START WATCHING</span><h2>Student mode</h2><p>Use the Agent’s lesson content as it is and go straight to the video.</p><button id="chooseStudentMode" class="fade-outline" type="button">Start learning</button></article>
+        </div>
+      </section>
+
+      <section id="teacherReviewView" class="fade-view teacher-review-view">
+        <div class="learn-heading"><div><span class="fade-eyebrow">TEACHER MODE</span><h1 id="reviewCourseTitle">Review lesson content</h1><p>Edits are saved to this browser and used in the lesson.</p></div><div class="review-header-actions"><button id="discardReviewChanges" class="fade-outline" type="button">Discard changes</button><button id="saveReviewHome" class="fade-outline" type="button">Save to Home</button><button id="saveReviewStart" class="fade-primary" type="button">Save and start lesson</button></div></div>
+        <section class="review-section"><div class="review-section-heading"><div><span class="fade-eyebrow">SUBTITLES</span><h2>Sentence translations</h2><p class="review-section-note">Editing a translation clears its old word alignment so stale character positions are not reused.</p></div></div><div id="reviewTranslations" class="review-editor-list"></div></section>
+        <section class="review-section"><div class="review-section-heading"><div><span class="fade-eyebrow">LEARNING TARGETS</span><h2>Language elements</h2></div></div><div id="reviewAnnotations" class="review-editor-list"></div><form id="addAnnotationForm" class="editor-add-form"><h3>Add a language element</h3><div class="editor-form-grid"><label>Subtitle<select name="cueId" required></select></label><label>Exact phrase in subtitle<input name="text" required></label><label>Translation<input name="translation"></label><label>Category<select name="category"><option value="fixed_expression">Fixed expression</option><option value="idiom">Idiom</option><option value="collocation">Collocation</option><option value="grammar_pattern">Grammar pattern</option><option value="noun">Noun</option><option value="verb">Verb</option><option value="adjective">Adjective</option><option value="adverb">Adverb</option><option value="other">Other</option></select></label><label>Difficulty<select name="difficulty"><option value="1">1 · A1</option><option value="2">2 · A2</option><option value="3">3 · B1–B2</option><option value="4">4 · C1–C2</option></select></label></div><button class="fade-outline" type="submit">Add language element</button></form></section>
+        <section class="review-section"><div class="review-section-heading"><div><span class="fade-eyebrow">CULTURE</span><h2>Culture notes</h2></div></div><div id="reviewCulture" class="review-editor-list"></div><form id="addCultureForm" class="editor-add-form"><h3>Add a culture note</h3><div class="editor-form-grid"><label>Appears at (seconds)<input name="triggerTime" type="number" min="0" step="0.1" required></label><label>Linked subtitle<select name="cueId"><option value="">None</option></select></label><label>Title<input name="title" required></label><label class="editor-wide">Explanation<textarea name="body" rows="3" required></textarea></label></div><button class="fade-outline" type="submit">Add culture note</button></form></section>
+        <section class="review-section"><div class="review-section-heading"><div><span class="fade-eyebrow">COMPREHENSION</span><h2>Quiz questions and answers</h2></div></div><div id="reviewQuizzes" class="review-editor-list"></div><form id="addQuestionForm" class="editor-add-form"><h3>Add a question</h3><label>Question<textarea name="prompt" rows="2" required></textarea></label><label>Answer options, one per line<textarea name="options" rows="4" required></textarea></label><div class="editor-form-grid"><label>Correct answer<select name="correctIndex"></select></label><label>Knowledge point<input name="category" value="comprehension"></label><label class="editor-wide">Explanation<textarea name="explanation" rows="2"></textarea></label></div><button class="fade-outline" type="submit">Add question</button></form></section>
       </section>
 
       <section id="learnView" class="fade-view">
-        <div class="learn-heading"><div><span id="learnCourseLabel" class="fade-eyebrow">Spanish Video Lesson</span><h1 id="learnTitle">Lola y Ana</h1><p id="learnMeta">Viewing 01</p></div></div>
-        <div class="lesson-brief"><div><span class="fade-eyebrow">TODAY'S GOAL</span><strong>Understand the main idea and notice three useful expressions.</strong></div><div class="lesson-steps" aria-label="Lesson progress"><span class="is-current">Watch</span><i>→</i><span>Notice</span><i>→</i><span>Check</span></div></div>
-        <div class="player-layout"><div class="fade-panel player-panel"><div class="video-shell" id="videoShell"><div id="ytFrame" class="yt-frame" title="Lola y Ana episode"></div><div class="video-fallback"><span>YOUTUBE PLAYER</span><strong>Your video will play here</strong><small>Subtitles appear below the player</small></div><div id="agentProgress" class="agent-progress" role="status" aria-live="polite" hidden><div class="agent-progress-card"><div class="agent-progress-top"><span>Analyzing…</span><strong id="agentProgressPercent">0%</strong></div><div class="agent-progress-track" aria-hidden="true"><b id="agentProgressBar"></b></div></div></div><div id="videoLinkReveal" class="video-link-reveal" hidden><span>LESSON READY</span><a id="videoLink" href="#" target="_blank" rel="noopener noreferrer">Open video on YouTube ↗</a></div></div><div class="player-controls"><button id="playDemo" class="play-button">▶ Play</button><div class="time-track"><span id="currentTime">00:00</span><i><b id="timeBar"></b></i><span id="durationTime">20:00</span></div><button id="toggleTranslation" class="control-chip">Show EN translation</button></div><div class="subtitle-card"><div class="subtitle-toolbar"><span>Adaptive subtitles</span><div><button class="support active" data-mode="balanced">Balanced</button><button class="support" data-mode="support">More support</button><button class="support" data-mode="challenge">Challenge</button></div></div><div class="learning-style-bar"><span id="learningStyleLabel">Hide difficult words</span><div class="learning-style-toggle" role="group" aria-label="Choose how to study difficult words"><button type="button" data-learning-style="hide" class="active" aria-pressed="true">Hide difficult words</button><button type="button" data-learning-style="highlight" aria-pressed="false">Highlight difficult words</button></div></div><div id="subtitleText" class="subtitle-text"></div><div class="subtitle-actions"><button id="revealBtn">Reveal this line</button><button id="lessBtn">More support</button><button id="cultureBtn">⌁ Culture note</button></div></div></div><aside class="fade-panel lesson-side"><div class="side-head"><div><span class="fade-eyebrow">SESSION</span><h2>This session</h2></div><span class="status-dot">●</span></div><div class="session-stat"><strong id="progressStat">0%</strong><span>episode progress</span></div><div class="goal-row"><span>Practice tip</span><strong>Listen first, then check</strong></div><div class="goal-row"><span>Current support</span><strong id="modeLabel">Balanced</strong></div><div class="checkpoint"><span class="checkpoint-tag">NEXT CHECKPOINT</span><strong id="checkpointTime">—</strong><p id="checkpointCopy">The video pauses at each checkpoint. Answer a quick question or skip it.</p><button id="startQuiz" class="fade-primary full">Start quick check</button></div><div class="signal-list"><div><span>Reveal</span><strong id="revealCount">0</strong></div><div><span>Checks completed</span><strong id="quizCount">0 / 0</strong></div></div></aside></div>
+        <div class="player-layout">
+          <div class="fade-panel player-panel">
+            <div class="video-shell" id="videoShell">
+              <div id="ytFrame" class="yt-frame" title="Lola y Ana episode"></div>
+              <div class="video-fallback"><span>YOUTUBE PLAYER</span><strong>Your video will play here</strong><small>Subtitles appear below the player</small></div>
+              <div id="videoLinkReveal" class="video-link-reveal" hidden><span>LESSON READY</span><a id="videoLink" href="#" target="_blank" rel="noopener noreferrer">Open video on YouTube ↗</a></div>
+            </div>
+            <div class="subtitle-card">
+              <div class="subtitle-toolbar">
+                <div class="subtitle-control">
+                  <div class="subtitle-control-heading"><span class="control-label">Difficulty range <button class="control-info" type="button" aria-label="About difficulty range" aria-describedby="difficultyTooltip">i</button><span class="control-tooltip" id="difficultyTooltip" role="tooltip">This slider sets the highest difficulty included. Higher levels include all lower difficulty labels. Changes update the current subtitles immediately.</span></span><strong id="fadeLevelLabel">Level 1 · A1 (Approx.)</strong></div>
+                  <input id="fadeLevel" type="range" min="0" max="4" step="1" value="1" aria-label="Cumulative difficulty range">
+                  <div class="subtitle-range-hint"><span>Full subtitles</span><span>More challenge</span></div>
+                  <div class="difficulty-legend" aria-label="Colors for hidden and highlighted subtitle elements by difficulty"><span><i class="difficulty-swatch difficulty-1"></i>Level 1</span><span><i class="difficulty-swatch difficulty-2"></i>Level 2</span><span><i class="difficulty-swatch difficulty-3"></i>Level 3</span><span><i class="difficulty-swatch difficulty-4"></i>Level 4</span></div>
+                </div>
+                <div class="subtitle-control">
+                  <div class="subtitle-control-heading"><span class="control-label">Element density <button class="control-info" type="button" aria-label="About element density" aria-describedby="densityTooltip">i</button><span class="control-tooltip" id="densityTooltip" role="tooltip">This slider controls the share of eligible tagged language elements to hide or highlight in the current subtitle. It uses existing annotations and updates subtitles immediately.</span></span><strong id="selectionLevelLabel">All tagged elements</strong></div>
+                  <input id="selectionLevel" type="range" min="0" max="4" step="1" value="4" aria-label="Subtitle element density">
+                  <div class="subtitle-range-hint"><span>None</span><span>All</span></div>
+                  <small id="selectionCount" aria-live="polite">0 elements selected in this line</small>
+                </div>
+                <button id="toggleTranslation" class="control-chip subtitle-translation-toggle" type="button" aria-pressed="false">Show translation</button>
+              </div>
+              <div class="learning-style-bar"><span id="learningStyleLabel">Subtitle display strategy</span><div class="learning-style-toggle" role="group" aria-label="Choose subtitle display strategy"><button type="button" data-learning-style="hide" class="active" aria-pressed="true">Hide difficult words</button><button type="button" data-learning-style="highlight" aria-pressed="false">Highlight difficult words</button></div></div>
+              <div id="subtitleText" class="subtitle-text"></div>
+              <div class="subtitle-corner"><div id="cultureCueAlert" class="culture-cue-alert" role="status" aria-live="polite" hidden>CULTURE NOTE!</div><div class="subtitle-actions"><button id="revealBtn">Reveal this line</button></div></div>
+            </div>
+          </div>
+          <aside class="fade-panel lesson-side"><div class="side-head"><div><span class="fade-eyebrow">SESSION</span><h2>This session</h2></div><span class="status-dot">●</span></div><div class="session-stat"><strong id="progressStat">0%</strong><span>episode progress</span></div><div class="goal-row"><span>Practice tip</span><strong>Watch first, then check</strong></div><div class="goal-row"><span>Current level</span><strong id="modeLabel">Level 1 · A1 (Approx.)</strong></div><div class="checkpoint"><div class="checkpoint-summary"><span class="checkpoint-tag">CHECKPOINTS</span><strong id="checkpointTotal">0 total</strong></div><div class="checkpoint-next"><span class="checkpoint-tag">NEXT IN</span><strong id="checkpointTime">—</strong></div></div><div class="culture-note-panel"><span class="checkpoint-tag">CULTURE NOTE</span><strong id="cultureNoteTitle">No culture note for this moment.</strong><p id="cultureNoteBody">Culture notes will appear as the story unfolds.</p></div></aside>
+        </div>
       </section>
 
-      <section id="reportView" class="fade-view"><div class="learn-heading"><div><span class="fade-eyebrow">SESSION REPORT</span><h1>Your session</h1><p>Your activity stays in this browser and helps shape subtitle support for the next part.</p></div><button class="fade-outline" data-view-target="learn">Continue learning →</button></div><div class="report-grid"><div class="fade-panel report-score"><span class="fade-eyebrow">COMPREHENSION CHECK</span><strong id="reportScore">—</strong><span>Checkpoint accuracy</span></div><div class="fade-panel"><span class="fade-eyebrow">LEARNING SIGNALS</span><div class="report-row"><span>Phrases revealed</span><strong id="reportReveal">0</strong></div><div class="report-row"><span>Next support level</span><strong id="reportMode">Balanced</strong></div></div></div><div class="fade-panel review-list"><div class="review-head"><div><span class="fade-eyebrow">SESSION REVIEW</span><h2>Review from this session</h2></div></div><div id="reviewItems" class="review-items"><p class="review-empty">Revealed phrases and missed questions will appear here for review.</p></div></div><div class="fade-panel feedback-panel"><span class="fade-eyebrow">HELP US TEST THE IDEA</span><h2 id="feedbackQuestion">Would you use Fade for another Spanish scene?</h2><div class="feedback-actions"><button class="feedback-option" type="button">Yes, I would</button><button class="feedback-option" type="button">Maybe</button><button class="feedback-option" type="button">Probably not</button></div><p id="feedbackNote">Your answer helps us improve the learning flow.</p></div></section>
+      <section id="reportView" class="fade-view">
+        <div id="teacherReport" class="teacher-report-view"><div class="learn-heading"><div><span class="fade-eyebrow">STUDENT PROGRESS</span><h1>Learning report</h1><p>Viewing progress and checkpoint accuracy across your courses.</p></div></div><div id="teacherReportContent" class="teacher-report-list" aria-live="polite"></div></div><span id="reportReveal" hidden></span><span id="reportMode" hidden></span>
+        <div id="studentSessionReport" class="student-session-report"><div class="learn-heading"><div><span class="fade-eyebrow">SESSION REPORT</span><h1>Your session</h1></div><button class="fade-outline" data-view-target="learn">Continue learning →</button></div><div class="report-grid"><div class="fade-panel report-score"><span class="fade-eyebrow">COMPREHENSION CHECK</span><strong id="reportScore">—</strong><span>Checkpoint accuracy</span></div></div><div class="fade-panel review-list"><div class="review-head"><div><span class="fade-eyebrow">SESSION REVIEW</span><h2>Review from this session</h2></div></div><div id="reviewItems" class="review-items"><p class="review-empty">Revealed phrases and missed questions will appear here for review.</p></div></div><div class="fade-panel feedback-panel"><span class="fade-eyebrow">HELP US TEST THE IDEA</span><h2 id="feedbackQuestion">Would you use Fade for another Spanish scene?</h2><div class="feedback-actions"><button class="feedback-option" type="button">Yes, I would</button><button class="feedback-option" type="button">Maybe</button><button class="feedback-option" type="button">Probably not</button></div><p id="feedbackNote">Your answer helps us improve the learning flow.</p></div></div>
+      </section>
     </main>
   </div>
   <div id="quizModal" class="modal-backdrop"><div class="quiz-modal"><button class="modal-close" id="closeQuiz">×</button><span id="quizEyebrow" class="fade-eyebrow">CHECKPOINT</span><h2 id="quizTitle">How much did you understand?</h2><p id="quizIntro">Choose the meaning that best matches what you just heard.</p><div id="quizContent" class="quiz-content"></div><div class="quiz-modal-actions"><button id="skipQuiz" class="fade-outline">Skip</button><button id="submitQuiz" class="fade-primary">Submit answers</button><button id="continueQuiz" class="fade-primary" hidden>Continue</button></div><div id="quizResult" class="quiz-result"></div></div></div>
   <div id="toast" class="toast"></div>
+  <script src="content-adapter.js"></script>
   <script src="engine.js"></script>
+  <script src="course-store.js"></script>
+  <script src="course-access.js"></script>
+  <script src="course-editor.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="https://www.youtube.com/iframe_api"></script>
-  <script src="app.js?v=20261031-agent-progress-2"></script>
+  <script src="app.js?v=20261103-account-isolation"></script>
+  <script src="course-workflow.js"></script>
+  <script src="demo-auth.js"></script>
 </body>
 </html>
