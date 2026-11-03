@@ -26,12 +26,16 @@ set -a; source .env; set +a; python3 server.py
 
 线上分析需要另外运行 `fade-subtitle-agent` 的 HTTP API。前端默认请求同域的
 `/api/agent`，Vercel 的 `api/agent/[...path].js` 会将请求转发到
-`FADE_AGENT_API_ORIGIN` 指定的 Agent API 服务；不需要把 API key 放到浏览器。
+`FADE_AGENT_API_ORIGIN` 指定的 Agent API 服务，并从服务端环境变量
+`FADE_AGENT_API_KEY` 添加 Bearer 密钥；浏览器不会接触该密钥。Agent 主机和
+受邀请码保护的 Vercel 项目必须设置相同的 `FADE_AGENT_API_KEY`，并在该前端项目设置
+`FADE_AGENT_API_ORIGIN`。不要在无邀请码限制的前端项目或 Preview 环境中配置 API 密钥。
+Agent 的 `/health` 探活路径公开，分析、轮询和结果接口需要密钥。
 长时间分析由 Agent 服务后台执行，前端只轮询任务状态，运行中进度最多显示 95%。
 
 首页的 `Try our Spanish demo` 会读取 `Spanish-demo.zip` 并提供教师/学生模式选择。
 课程、教师修订和观看进度保存在当前浏览器的 IndexedDB 中；预设教师和学生身份仍只是本机演示，暂不提供真实账户或跨设备同步。
-注意：邀请码保护前端登录流程和同域 Agent 代理，不能阻止知道 Agent 服务直连地址的人直接访问该服务；这一层限制需要 Agent 服务自己验证请求。静态资源（包括演示内容包）也仍可由知道文件地址的人直接获取。
+注意：Agent API 会拒绝没有有效服务端密钥的直接请求。邀请码用于限制受保护前端的用户访问；服务端 API 密钥用于限制前端代理调用 Agent。静态资源（包括演示内容包）仍可由知道文件地址的人直接获取。
 
 ## 生成内容包
 
