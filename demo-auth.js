@@ -2,6 +2,7 @@
   const KEY = 'fade-demo-account-id';
   const access = window.FadeCourseAccess;
   let current = null;
+  let authRevision = 0;
   const $ = selector => document.querySelector(selector);
   function showApp(accountId) {
     const next = access.account(accountId);
@@ -42,35 +43,53 @@
   $('#authRegisterTab').addEventListener('click', () => setPanel('register'));
   $('#loginPanel').addEventListener('submit', event => {
     event.preventDefault();
-    const email = event.currentTarget.elements.email.value.trim();
-    const password = event.currentTarget.elements.password.value;
-    if (!email || !password) {
-      $('#authMessage').textContent = 'Enter an email and password to continue.';
+    const form = event.currentTarget;
+    const email = form.elements.email.value.trim();
+    const password = form.elements.password.value;
+    const inviteCode = form.elements.invite_code.value.trim();
+    if (!inviteCode || !email || !password) {
+      $('#authMessage').textContent = 'Enter the invite code, email, and password to continue.';
       return;
     }
-    const accountId = new FormData(event.currentTarget).get('role') === 'teacher' ? 'teacher-1' : 'student-1';
-    try { localStorage.setItem(KEY, accountId); } catch {}
-    showApp(accountId);
+    const accountId = new FormData(form).get('role') === 'teacher' ? 'teacher-1' : 'student-1';
+    const submit = form.querySelector('[type="submit"]');
+    submit.disabled = true;
+    $('#authMessage').textContent = 'Checking invite code…';
+    fetch('/api/access', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ invite_code: inviteCode }) })
+      .then(async response => {
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(payload.error || `Access check failed (${response.status}).`);
+        authRevision += 1;
+        try { localStorage.setItem(KEY, accountId); } catch {}
+        form.reset();
+        showApp(accountId);
+      })
+      .catch(error => { $('#authMessage').textContent = error.message; })
+      .finally(() => { submit.disabled = false; });
   });
   $('#registerPanel').addEventListener('submit', event => {
     event.preventDefault();
     $('#authMessage').textContent = 'Registration is not available in this demo. Choose Login to enter a preset account.';
   });
   $('#demoLogout').addEventListener('click', async () => {
+    authRevision += 1;
     if (window.FadeApp?.state.currentCourse) await window.FadeApp.persistCourse();
     const accountId = current?.id;
     clearLesson();
     try { if (accountId) localStorage.removeItem(`fade-analysis-draft:${accountId}`); } catch {}
     try { localStorage.removeItem(KEY); } catch {}
+    await fetch('/api/access', { method: 'DELETE', credentials: 'same-origin' }).catch(() => {});
     showApp(null);
     setPanel('login');
   });
   $('#landingLogout')?.addEventListener('click', () => $('#demoLogout').click());
   window.FadeAuth = { get current() { return current; }, get accountId() { return current?.id || null; }, get role() { return current?.role || null; } };
   (async () => {
+    const revision = authRevision;
     try { await window.FadeCourseStore.migrateLegacyCourses(); } catch (error) { $('#authMessage').textContent = `Local courses could not be migrated: ${error.message}`; }
     let saved = null;
     try { saved = localStorage.getItem(KEY); } catch {}
-    showApp(saved === 'teacher-1' || saved === 'student-1' ? saved : null);
+    const session = await fetch('/api/access', { credentials: 'same-origin' }).then(response => response.ok).catch(() => false);
+    if (revision === authRevision) showApp(session && (saved === 'teacher-1' || saved === 'student-1') ? saved : null);
   })();
 })();

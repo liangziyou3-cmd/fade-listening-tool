@@ -11,16 +11,18 @@
 ## 快速体验
 
 ```bash
-python3 server.py
+set -a; source .env; set +a; python3 server.py
 ```
 
-然后打开 `http://127.0.0.1:4173/`，可以点击 `Try our Spanish demo` 体验教师/学生模式，或输入 YouTube 链接进行分析。
+先在被 Git 忽略的 `.env` 中配置 `FADE_INVITE_CODE`，然后打开 `http://127.0.0.1:4173/`。可以点击 `Try our Spanish demo` 体验教师/学生模式，或输入 YouTube 链接进行分析。
 
-## 静态上线
+## Vercel 上线
 
-项目不需要运行时后端即可部署。把整个目录作为静态项目发布到 Vercel、Netlify 或 GitHub Pages，并将根目录设置为项目根目录。不要直接双击 `index.html`，因为示例包和 YouTube 播放器需要 HTTP 环境。
+把前端目录作为 Vercel 项目根目录发布。邀请码验证和 Agent 代理使用 Vercel Functions，因此仅部署静态文件或直接打开 `index.html` 无法完成登录。
 
 当前目录包含 `vercel.json`，可直接作为 Vercel 静态站配置使用。部署前请确认视频允许嵌入，并不要把 `.env` 或任何 API key 上传。
+
+登录需要在 Vercel 项目环境变量中设置 `FADE_INVITE_CODE`，并在设置或更改后重新部署。邀请码由服务端验证，并写入 7 天有效的 HttpOnly Cookie；Agent 代理拒绝没有有效会话的请求。不要把实际邀请码提交到 Git。邮箱和密码仍是演示字段，注册按钮仍不会创建账户。
 
 线上分析需要另外运行 `fade-subtitle-agent` 的 HTTP API。前端默认请求同域的
 `/api/agent`，Vercel 的 `api/agent/[...path].js` 会将请求转发到
@@ -28,7 +30,8 @@ python3 server.py
 长时间分析由 Agent 服务后台执行，前端只轮询任务状态，运行中进度最多显示 95%。
 
 首页的 `Try our Spanish demo` 会读取 `Spanish-demo.zip` 并提供教师/学生模式选择。
-课程、教师修订和观看进度保存在当前浏览器的 IndexedDB 中；MVP 暂不提供账号登录或跨设备同步。
+课程、教师修订和观看进度保存在当前浏览器的 IndexedDB 中；预设教师和学生身份仍只是本机演示，暂不提供真实账户或跨设备同步。
+注意：邀请码保护前端登录流程和同域 Agent 代理，不能阻止知道 Agent 服务直连地址的人直接访问该服务；这一层限制需要 Agent 服务自己验证请求。静态资源（包括演示内容包）也仍可由知道文件地址的人直接获取。
 
 ## 生成内容包
 
