@@ -113,6 +113,22 @@ function saveAnalyzerDraft(config){const draft={url:config.input?.value.trim()||
 function restoreAnalyzerDraft(){resetAnalyzerState();try{localStorage.removeItem(`${ANALYSIS_DRAFT_PREFIX}teacher-1`);localStorage.removeItem(`${ANALYSIS_DRAFT_PREFIX}student-1`);localStorage.removeItem('fade-youtube-url')}catch{}}
 youtubeAnalyzers.forEach(config=>{config.input?.addEventListener('input',()=>saveAnalyzerDraft(config));config.source?.addEventListener('change',()=>saveAnalyzerDraft(config));config.translation?.addEventListener('change',()=>saveAnalyzerDraft(config))});
 $$('[data-scroll]').forEach(button=>button.addEventListener('click',()=>document.getElementById(button.dataset.scroll)?.scrollIntoView({behavior:'smooth'})));
+const phoneDemo=$('#heroPhoneDemo');
+if(phoneDemo){
+ const phonePlay=$('#phoneDemoPlay'),phoneReveal=$('#phoneRevealPhrase'),phoneQuickCheck=$('#phoneQuickCheck'),phoneQuiz=$('#phoneQuiz'),phoneBack=$('#phoneBackToWatch'),phoneHint=$('#phoneDemoHint'),phoneTime=$('#phoneDemoTime'),phoneProgress=$('#phoneDemoProgress'),phoneTitle=$('#phoneSceneTitle'),phoneSubtitle=$('#phoneSceneSubtitle'),phoneFeedback=$('#phoneQuizFeedback');
+ let phoneTimer=null,phoneProgressValue=22;
+ const setPhoneProgress=value=>{phoneProgressValue=Math.max(22,Math.min(100,value));if(phoneProgress)phoneProgress.style.width=`${phoneProgressValue}%`;if(phoneTime)phoneTime.textContent=phoneProgressValue>=100?'00:20':`00:${String(8+Math.round((phoneProgressValue-22)/10)).padStart(2,'0')}`};
+ const stopPhone=()=>{clearInterval(phoneTimer);phoneTimer=null;phoneDemo.classList.remove('is-playing');phonePlay?.setAttribute('aria-pressed','false');phonePlay?.setAttribute('aria-label','Play the sample scene');if(phonePlay)phonePlay.innerHTML='&#9654;';};
+ const startPhone=()=>{if(phoneTimer)return;if(phoneProgressValue>=100)setPhoneProgress(22);phoneDemo.classList.add('is-playing');phonePlay?.setAttribute('aria-pressed','true');phonePlay?.setAttribute('aria-label','Pause the sample scene');if(phonePlay)phonePlay.innerHTML='&#10074;&#10074;';if(phoneTitle)phoneTitle.textContent='Keep listening';if(phoneSubtitle)phoneSubtitle.textContent='Follow the story, one phrase at a time';phoneTimer=setInterval(()=>{setPhoneProgress(phoneProgressValue+3);if(phoneProgressValue>=100)stopPhone()},280)};
+ phonePlay?.addEventListener('click',()=>phoneTimer?stopPhone():startPhone());
+ phoneReveal?.addEventListener('click',()=>{const revealed=phoneDemo.classList.toggle('phrase-revealed');phoneReveal.setAttribute('aria-pressed',String(revealed));if(phoneHint)phoneHint.textContent=revealed?'Hint revealed — notice the phrase in context.':'Tap the faded subtitle to reveal a hint.'});
+ const openPhoneQuiz=()=>{stopPhone();if(phoneQuiz)phoneQuiz.hidden=false;if(phoneQuickCheck)phoneQuickCheck.hidden=true;phoneDemo.classList.add('quiz-open')};
+ phoneQuickCheck?.addEventListener('click',openPhoneQuiz);
+ phoneBack?.addEventListener('click',()=>{if(phoneQuiz)phoneQuiz.hidden=true;if(phoneQuickCheck)phoneQuickCheck.hidden=false;phoneDemo.classList.remove('quiz-open');if(phoneFeedback)phoneFeedback.textContent='Choose an answer.';$$('.phone-quiz-option').forEach(option=>option.classList.remove('is-correct','is-wrong'))});
+ $$('.phone-quiz-option').forEach(option=>option.addEventListener('click',()=>{const correct=option.dataset.demoAnswer==='correct';if(phoneFeedback)phoneFeedback.textContent=correct?'Exactly — reveal a phrase when you need help.':'Try again — the faded phrase can be revealed.';$$('.phone-quiz-option').forEach(item=>item.classList.remove('is-correct','is-wrong'));option.classList.add(correct?'is-correct':'is-wrong')}));
+ $$('[data-phone-action]').forEach(button=>button.addEventListener('click',()=>{const action=button.dataset.phoneAction;if(action==='play')phoneTimer?stopPhone():startPhone();if(action==='reveal')phoneReveal?.click();if(action==='quiz')openPhoneQuiz()}));
+ setPhoneProgress(22);
+}
 const revealWords=$$('.tagline-reveal [data-reveal-word]');
 if(revealWords.length&&'IntersectionObserver' in window){
  const wordObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-revealed');wordObserver.unobserve(entry.target)}}),{threshold:.6,rootMargin:'0px 0px -12%'});
