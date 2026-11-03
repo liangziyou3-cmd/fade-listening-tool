@@ -19,6 +19,7 @@ from urllib.parse import unquote, urlsplit
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 AGENT_API_ORIGIN = os.getenv("FADE_AGENT_API_ORIGIN", "http://127.0.0.1:8080").rstrip("/")
+AGENT_API_KEY = os.getenv("FADE_AGENT_API_KEY", "")
 INVITE_COOKIE = "fade_access"
 SESSION_SECONDS = 60 * 60 * 24 * 7
 
@@ -118,6 +119,9 @@ class Handler(SimpleHTTPRequestHandler):
         if not self.has_valid_invite():
             self.send_json(401, {"error": "Enter a valid invite code to use Fade Agent."})
             return
+        if not AGENT_API_KEY:
+            self.send_json(503, {"error": "FADE_AGENT_API_KEY is not configured."})
+            return
         parsed = urlsplit(self.path)
         agent_path = parsed.path[len("/api/agent") :] or "/"
         target = f"{AGENT_API_ORIGIN}{agent_path}"
@@ -125,7 +129,7 @@ class Handler(SimpleHTTPRequestHandler):
             target = f"{target}?{parsed.query}"
         length = int(self.headers.get("Content-Length", "0"))
         body = self.rfile.read(length) if length and self.command not in {"GET", "HEAD"} else None
-        headers = {}
+        headers = {"Authorization": f"Bearer {AGENT_API_KEY}"}
         if self.headers.get("Content-Type"):
             headers["Content-Type"] = self.headers["Content-Type"]
         request = urllib.request.Request(target, data=body, headers=headers, method=self.command)

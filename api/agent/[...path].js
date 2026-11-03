@@ -12,13 +12,18 @@ module.exports = async function handler(request, response) {
     response.status(503).json({ error: 'FADE_AGENT_API_ORIGIN is not configured.' });
     return;
   }
+  const apiKey = process.env.FADE_AGENT_API_KEY;
+  if (!apiKey) {
+    response.status(503).json({ error: 'FADE_AGENT_API_KEY is not configured.' });
+    return;
+  }
 
   const segments = Array.isArray(request.query.path) ? request.query.path : [request.query.path].filter(Boolean);
   const target = new URL(segments.map(segment => encodeURIComponent(segment)).join('/'), `${origin.replace(/\/$/, '')}/`);
   const query = new URLSearchParams(request.query);
   query.delete('path');
   target.search = query.toString();
-  const headers = {};
+  const headers = { authorization: `Bearer ${apiKey}` };
   if (request.headers['content-type']) headers['content-type'] = request.headers['content-type'];
 
   try {
