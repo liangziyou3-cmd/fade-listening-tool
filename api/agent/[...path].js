@@ -1,4 +1,12 @@
-export default async function handler(request, response) {
+const { isAuthorized } = require('../../lib/access');
+
+module.exports = async function handler(request, response) {
+  response.setHeader('Cache-Control', 'no-store');
+  if (!isAuthorized(request)) {
+    response.status(401).json({ error: 'Enter a valid invite code to use Fade Agent.' });
+    return;
+  }
+
   const origin = process.env.FADE_AGENT_API_ORIGIN;
   if (!origin) {
     response.status(503).json({ error: 'FADE_AGENT_API_ORIGIN is not configured.' });
@@ -26,4 +34,4 @@ export default async function handler(request, response) {
   } catch (error) {
     response.status(502).json({ error: `Agent API proxy failed: ${error.message}` });
   }
-}
+};

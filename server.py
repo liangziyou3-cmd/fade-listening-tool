@@ -5,16 +5,22 @@ The browser never receives a Qwen or Doubao API key. Configure one provider
 with environment variables before starting this server.
 """
 import base64
+import hashlib
+import hmac
 import json
 import os
+import time
 import urllib.request
+from http.cookies import SimpleCookie
 from urllib.error import HTTPError, URLError
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
-from urllib.parse import urlsplit
+from urllib.parse import unquote, urlsplit
 
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 AGENT_API_ORIGIN = os.getenv("FADE_AGENT_API_ORIGIN", "http://127.0.0.1:8080").rstrip("/")
+INVITE_COOKIE = "fade_access"
+SESSION_SECONDS = 60 * 60 * 24 * 7
 
 
 class ConfigError(Exception):
@@ -100,7 +106,18 @@ class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=ROOT, **kwargs)
 
+    def hidden_path(self):
+        path = unquote(urlsplit(self.path).path)
+        return any(part.startswith(".") for part in path.split("/") if part)
+
+    def list_directory(self, path):
+        self.send_error(403)
+        return None
+
     def proxy_agent_request(self):
+        if not self.has_valid_invite():
+            self.send_json(401, {"error": "Enter a valid invite code to use Fade Agent."})
+            return
         parsed = urlsplit(self.path)
         agent_path = parsed.path[len("/api/agent") :] or "/"
         target = f"{AGENT_API_ORIGIN}{agent_path}"
@@ -136,18 +153,37 @@ class Handler(SimpleHTTPRequestHandler):
 
     def do_GET(self):
         path = urlsplit(self.path).path
+        if self.hidden_path():
+            self.send_error(404)
+            return
+        if path == "/api/access":
+            authorized = self.has_valid_invite()
+            self.send_json(200 if authorized else 401, {"authorized": authorized})
+            return
         if path == "/api/agent" or path.startswith("/api/agent/"):
             self.proxy_agent_request()
             return
         super().do_GET()
 
+    def do_HEAD(self):
+        if self.hidden_path():
+            self.send_error(404)
+            return
+        super().do_HEAD()
+
     def do_POST(self):
         path = urlsplit(self.path).path
+        if path == "/api/access":
+            self.create_invite_session()
+            return
         if path == "/api/agent" or path.startswith("/api/agent/"):
             self.proxy_agent_request()
             return
         if self.path != "/api/tts":
             self.send_error(404)
+            return
+        if not self.has_valid_invite():
+            self.send_json(401, {"error": "Enter a valid invite code to use text-to-speech."})
             return
         try:
             length = int(self.headers.get("Content-Length", "0"))
@@ -172,6 +208,64 @@ class Handler(SimpleHTTPRequestHandler):
             self.send_error(503, str(exc))
         except Exception as exc:  # keep the demo server alive and return a useful status
             self.send_error(502, str(exc))
+
+    def do_DELETE(self):
+        if urlsplit(self.path).path != "/api/access":
+            self.send_error(404)
+            return
+        self.send_response(204)
+        self.send_header("Set-Cookie", f"{INVITE_COOKIE}=; HttpOnly; Path=/; SameSite=Strict; Max-Age=0")
+        self.send_header("Cache-Control", "no-store")
+        self.end_headers()
+
+    def send_json(self, status, value, headers=None):
+        payload = json.dumps(value).encode("utf-8")
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(payload)))
+        self.send_header("Cache-Control", "no-store")
+        for name, content in (headers or {}).items():
+            self.send_header(name, content)
+        self.end_headers()
+        self.wfile.write(payload)
+
+    def has_valid_invite(self):
+        secret = os.getenv("FADE_INVITE_CODE", "")
+        if not secret:
+            return False
+        cookies = SimpleCookie(self.headers.get("Cookie", ""))
+        morsel = cookies.get(INVITE_COOKIE)
+        if not morsel:
+            return False
+        try:
+            expires_text, supplied = morsel.value.split(".", 1)
+            expires_at = int(expires_text)
+        except (ValueError, TypeError):
+            return False
+        if expires_at <= int(time.time()):
+            return False
+        expected = hmac.new(secret.encode(), f"fade-access-v1:{expires_at}".encode(), hashlib.sha256).hexdigest()
+        return hmac.compare_digest(supplied, expected)
+
+    def create_invite_session(self):
+        secret = os.getenv("FADE_INVITE_CODE", "")
+        if not secret:
+            self.send_json(503, {"error": "Invite access is not configured on the server."})
+            return
+        try:
+            length = int(self.headers.get("Content-Length", "0"))
+            payload = json.loads(self.rfile.read(length).decode("utf-8"))
+            supplied = str(payload.get("invite_code", ""))
+        except (ValueError, TypeError, json.JSONDecodeError):
+            self.send_json(400, {"error": "Invalid invite request."})
+            return
+        if not hmac.compare_digest(supplied, secret):
+            self.send_json(401, {"error": "That invite code is not valid."})
+            return
+        expires_at = int(time.time()) + SESSION_SECONDS
+        signature = hmac.new(secret.encode(), f"fade-access-v1:{expires_at}".encode(), hashlib.sha256).hexdigest()
+        cookie = f"{INVITE_COOKIE}={expires_at}.{signature}; HttpOnly; Path=/; SameSite=Strict; Max-Age={SESSION_SECONDS}"
+        self.send_json(200, {"authorized": True}, {"Set-Cookie": cookie})
 
 
 if __name__ == "__main__":

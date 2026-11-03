@@ -30,11 +30,12 @@
       <p class="auth-intro">Choose a demo role to explore lessons and keep a separate course history in this browser.</p>
       <div class="auth-tabs" role="tablist" aria-label="Account access"><button id="authLoginTab" class="active" type="button" role="tab" aria-selected="true" aria-controls="loginPanel">Log in</button><button id="authRegisterTab" type="button" role="tab" aria-selected="false" aria-controls="registerPanel">Register</button></div>
       <form id="loginPanel" class="auth-form" role="tabpanel" novalidate>
+        <label>Invite code<input name="invite_code" type="password" autocomplete="one-time-code" required placeholder="Enter your invite code"></label>
         <label>Email<input name="email" type="email" autocomplete="email" required placeholder="you@example.com"></label>
         <label>Password<input name="password" type="password" autocomplete="current-password" required placeholder="Enter any password"></label>
         <fieldset><legend>Continue as</legend><label class="auth-role"><input type="radio" name="role" value="teacher" checked><span><strong>Teacher</strong><small>Review and share lessons</small></span></label><label class="auth-role"><input type="radio" name="role" value="student"><span><strong>Student</strong><small>Learn as Student 1</small></span></label></fieldset>
         <button class="fade-primary auth-submit" type="submit">Log in to demo <b>↗</b></button>
-        <small>Demo only: any email and password work. No credentials are saved.</small>
+        <small>Demo only: any email and password work. The invite code is required to continue.</small>
       </form>
       <form id="registerPanel" class="auth-form" role="tabpanel" hidden>
         <label>Email<input name="email" type="email" autocomplete="email" placeholder="you@example.com"></label>
